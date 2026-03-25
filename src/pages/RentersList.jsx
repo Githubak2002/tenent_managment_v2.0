@@ -1,16 +1,18 @@
 import { useState, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, Plus, Phone, Calendar, Home, IndianRupee } from 'lucide-react';
+import { Search, Plus, Phone, Calendar, Home, IndianRupee, Download } from 'lucide-react';
+import ExportModal from '../components/modals/ExportModal';
 
 export default function RentersList({ renters, rentRecords, onAddRenter, onOpenAddModal }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const isLeftTab = location.search.includes('tab=left');
+  const isInactiveTab = location.search.includes('tab=inactive');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showExport, setShowExport] = useState(false);
 
   const activeRenters = renters.filter(r => r.status === 'active');
-  const leftRenters = renters.filter(r => r.status === 'left');
-  const list = isLeftTab ? leftRenters : activeRenters;
+  const inactiveRenters = renters.filter(r => r.status !== 'active');
+  const list = isInactiveTab ? inactiveRenters : activeRenters;
 
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return list;
@@ -40,37 +42,48 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
 
   return (
     <div className="animate-slide-up">
+      {/* Export Modal */}
+      {showExport && (
+        <ExportModal renters={renters} rentRecords={rentRecords} onClose={() => setShowExport(false)} />
+      )}
+
       {/* Page Header */}
       <div className="page-header">
         <div>
-          <div className="page-title">{isLeftTab ? 'Left Renters' : 'Active Renters'}</div>
+          <div className="page-title">{isInactiveTab ? 'Inactive Renters' : 'Active Renters'}</div>
           <div className="page-subtitle">
-            {isLeftTab
-              ? `${leftRenters.length} renters who have moved out`
+            {isInactiveTab
+              ? `${inactiveRenters.length} renters currently inactive`
               : `${activeRenters.length} renters currently staying`}
           </div>
         </div>
-        {!isLeftTab && (
-          <button className="btn btn-primary" onClick={handleAddClick}>
-            <Plus size={16} /> Add Renter
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button className="btn btn-secondary" onClick={() => setShowExport(true)}>
+            <Download size={16} /> Export
           </button>
-        )}
+          {!isInactiveTab && (
+            <button className="btn btn-primary" onClick={handleAddClick}>
+              <Plus size={16} /> Add Renter
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Tabs + Search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
         <div className="tabs">
           <button
-            className={`tab-btn ${!isLeftTab ? 'active' : ''}`}
+            className={`tab-btn ${!isInactiveTab ? 'active' : ''}`}
             onClick={() => navigate('/renters')}
           >
             ✅ Active ({activeRenters.length})
           </button>
           <button
-            className={`tab-btn ${isLeftTab ? 'active' : ''}`}
-            onClick={() => navigate('/renters?tab=left')}
+            className={`tab-btn ${isInactiveTab ? 'active' : ''}`}
+            onClick={() => navigate('/renters?tab=inactive')}
           >
-            🚪 Left ({leftRenters.length})
+            🚪 Inactive ({inactiveRenters.length})
           </button>
         </div>
 
@@ -91,9 +104,9 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
           <div className="empty-state-icon">🏠</div>
           <div className="empty-state-title">No renters found</div>
           <div className="empty-state-text">
-            {searchQuery ? 'Try a different search term' : isLeftTab ? 'No one has left yet' : 'Add your first renter to get started'}
+            {searchQuery ? 'Try a different search term' : isInactiveTab ? 'No one has left yet' : 'Add your first renter to get started'}
           </div>
-          {!isLeftTab && !searchQuery && (
+          {!isInactiveTab && !searchQuery && (
             <button className="btn btn-primary" style={{ marginTop: '16px' }} onClick={handleAddClick}>
               <Plus size={16} /> Add First Renter
             </button>
@@ -103,7 +116,7 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
         <div className="renters-grid">
           {filtered.map(renter => {
             const lastPay = getLastPayment(renter.id);
-            const pendingMarch = !isLeftTab && hasMarchPending(renter.id);
+            const pendingMarch = !isInactiveTab && hasMarchPending(renter.id);
             return (
               <div key={renter.id} className="renter-card" onClick={() => navigate(`/renters/${renter.id}`)}>
                 {pendingMarch && (
@@ -116,12 +129,12 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
                   <div className="renter-info">
                     <div className="renter-name">{renter.name}</div>
                     <div className="renter-flat">
-                      <Home size={11} style={{ display:'inline', marginRight:'4px' }} />
+                      <Home size={11} style={{ display: 'inline', marginRight: '4px' }} />
                       {renter.flat}
                     </div>
                     <div style={{ marginTop: '6px' }}>
                       <span className={`badge ${renter.status === 'active' ? 'badge-active' : 'badge-left'}`}>
-                        {renter.status === 'active' ? '● Active' : '● Left'}
+                        {renter.status === 'active' ? '● Active' : '● Inactive'}
                       </span>
                     </div>
                   </div>
