@@ -1,10 +1,15 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, UserCheck, UserX, IndianRupee, TrendingUp, Home, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { Users, UserCheck, UserX, IndianRupee, TrendingUp, Home, AlertCircle, CheckCircle, Clock, Database, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import seedData from '../data/seed.json';
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 export default function Dashboard({ renters, rentRecords }) {
   const navigate = useNavigate();
+  const [isMigrating, setIsMigrating] = useState(false);
+
   const activeRenters = renters.filter(r => r.status === 'active');
   const leftRenters = renters.filter(r => r.status === 'left');
 
@@ -19,14 +24,74 @@ export default function Dashboard({ renters, rentRecords }) {
   const expectedTotal = activeRenters.reduce((sum, r) => sum + r.monthlyRent, 0);
   const collectionRate = activeRenters.length > 0 ? Math.round((paidThisMonth.length / activeRenters.length) * 100) : 0;
 
-  const recentActivity = [
-    { color: 'green', text: 'Vikram Singh paid March 2025 rent — ₹7,540', time: '2 days ago' },
-    { color: 'green', text: 'Sneha Joshi paid February 2025 rent — ₹10,690', time: '5 days ago' },
-    { color: 'purple', text: 'New renter Sneha Joshi added to Room 202', time: '12 Mar 2025' },
-    { color: 'yellow', text: 'WhatsApp reminder sent to Priya Patel for March rent', time: '11 Mar 2025' },
-    { color: 'red', text: 'Meera Nair moved out — Room 302 now vacant', time: '31 Dec 2024' },
-    { color: 'green', text: 'Priya Patel paid February 2025 rent — ₹10,130', time: '6 Feb 2025' },
-  ];
+  // Generate dynamic recent activity from rentRecords and renters
+  const recentActivity = rentRecords
+    .slice()
+    .sort((a, b) => new Date(b.createdAt || b.paidDate || 0) - new Date(a.createdAt || a.paidDate || 0))
+    .slice(0, 5)
+    .map(r => {
+      const renter = renters.find(ren => ren.id === r.renterId);
+      const name = renter ? renter.name : 'A renter';
+      
+      // Simple logic mapping based on record status
+      if (r.rentPaid) {
+        return { color: 'green', text: `${name} paid ${r.month} ${r.year} rent — ₹${r.totalAmount.toLocaleString('en-IN')}`, time: r.paidDate || 'Recently' };
+      } else if (r.amountPaid > 0) {
+        return { color: 'yellow', text: `${name} partially paid ${r.month} rent — ₹${r.amountPaid.toLocaleString('en-IN')}`, time: r.paidDate || 'Recently' };
+      } else if (r.whatsappSent) {
+        return { color: 'primary', text: `WhatsApp reminder sent to ${name} for ${r.month} rent`, time: 'Recently' };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  if (recentActivity.length === 0) {
+    recentActivity.push({ color: 'primary', text: 'No recent activity yet', time: 'Just now' });
+  }
+
+  const handleMigrate = async () => {
+    if (!window.confirm("Are you sure you want to migrate seed.json? Only do this once!")) return;
+    setIsMigrating(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("No session");
+      
+      const landlordId = session.user.id;
+      const idMap = {}; // Maps old string ID -> new UUID
+      
+      // 1. Insert Renters
+      for (const r of seedData.renters) {
+        const payload = { ...r, landlord_id: landlordId };
+        const oldId = payload.original_id;
+        delete payload.original_id;
+
+        const { data, error } = await supabase.from('renters').insert([payload]).select().single();
+        if (data) {
+          idMap[oldId] = data.id;
+        } else {
+          console.error("Renter insert error:", error);
+        }
+      }
+
+      // 2. Insert Records
+      for (const p of seedData.payments) {
+        const newRenterId = idMap[p.original_renter_id];
+        if (!newRenterId) continue;
+        
+        const payload = { ...p, renter_id: newRenterId };
+        delete payload.original_renter_id;
+        
+        await supabase.from('rent_records').insert([payload]);
+      }
+      
+      alert("Migration Complete! The page will now reload to fetch live data.");
+      window.location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("Migration failed. Check console.");
+    }
+    setIsMigrating(false);
+  };
 
   return (
     <div className="animate-slide-up">
@@ -36,9 +101,17 @@ export default function Dashboard({ renters, rentRecords }) {
           <div className="page-title">Good evening! 👋</div>
           <div className="page-subtitle">Here's what's happening with your properties in March 2025</div>
         </div>
-        <button className="btn btn-primary" onClick={() => navigate('/renters')}>
-          <Users size={16} /> Manage Renters
-        </button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {renters.length === 0 && (
+            <button className="btn btn-secondary" onClick={handleMigrate} disabled={isMigrating}>
+              {isMigrating ? <Loader2 size={16} className="spin" /> : <Database size={16} />} 
+              {isMigrating ? 'Migrating...' : 'Migrate Old Data'}
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={() => navigate('/renters')}>
+            <Users size={16} /> Manage Renters
+          </button>
+        </div>
       </div>
 
       {/* Stat Cards */}

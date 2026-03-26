@@ -30,9 +30,15 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
     return records[records.length - 1];
   };
 
-  const hasMarchPending = (renterId) => {
-    const march = rentRecords.find(r => r.renterId === renterId && r.month === 'March' && r.year === 2025);
-    return !march || !march.rentPaid;
+  const isPendingPayer = (renterId) => {
+    // 1. Renter had not paid rent for current month
+    const currentMonth = rentRecords.find(r => String(r.renterId) === String(renterId) && r.month === 'March' && r.year === 2025);
+    const unpaidCurrent = !currentMonth || !currentMonth.rentPaid;
+
+    // 2. Status in rent history is pending (unpaid or partially paid)
+    const hasPendingHistory = rentRecords.some(r => String(r.renterId) === String(renterId) && (!r.rentPaid || (r.amountPaid !== null && r.amountPaid < r.totalAmount)));
+
+    return unpaidCurrent && hasPendingHistory;
   };
 
   // Use onOpenAddModal (from App/FAB) or fallback to inline handler
@@ -116,7 +122,7 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
         <div className="renters-grid">
           {filtered.map(renter => {
             const lastPay = getLastPayment(renter.id);
-            const pendingMarch = !isInactiveTab && hasMarchPending(renter.id);
+            const pendingMarch = !isInactiveTab && isPendingPayer(renter.id);
             return (
               <div key={renter.id} className="renter-card" onClick={() => navigate(`/renters/${renter.id}`)}>
                 {pendingMarch && (

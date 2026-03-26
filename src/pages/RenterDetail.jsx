@@ -58,7 +58,7 @@ function buildWhatsAppMessage(renter, record) {
 export default function RenterDetail({ renters, rentRecords, onUpdateRenter, onDeleteRenter, onAddRentRecord, onUpdateRentRecord, onDeleteRentRecord }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const renter = renters.find(r => r.id === Number(id));
+  const renter = renters.find(r => String(r.id) === String(id));
 
   const [showAddRecord, setShowAddRecord] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);

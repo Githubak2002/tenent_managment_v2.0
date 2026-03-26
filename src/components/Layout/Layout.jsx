@@ -1,7 +1,7 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Building2, Plus, Sun, Moon, Home } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, Plus, Sun, Moon, Home, LogOut } from 'lucide-react';
 
-export default function Layout({ children, onAddRenter, theme, onToggleTheme }) {
+export default function Layout({ children, onAddRenter, theme, onToggleTheme, onSignOut }) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -89,6 +89,11 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme }) 
               <ThemeIcon size={15} />
               <span>{themeLabel}</span>
             </button>
+            {onSignOut && (
+              <button className="header-theme-btn" onClick={onSignOut} title="Sign Out">
+                <LogOut size={15} />
+              </button>
+            )}
           </div>
         </header>
 
@@ -124,6 +129,13 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme }) 
             <ThemeIcon size={22} />
             <span>{themeLabel}</span>
           </button>
+
+          {onSignOut && (
+            <button className="bottom-nav-item" onClick={onSignOut}>
+              <LogOut size={22} />
+              <span>Sign Out</span>
+            </button>
+          )}
         </div>
       </nav>
     </div>
