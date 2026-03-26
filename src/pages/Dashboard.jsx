@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, UserCheck, UserX, IndianRupee, TrendingUp, Home, AlertCircle, CheckCircle, Clock, Database, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import seedData from '../data/seed.json';
+// import seedData from '../data/seed.json';
 
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export default function Dashboard({ renters, rentRecords }) {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export default function Dashboard({ renters, rentRecords }) {
     .map(r => {
       const renter = renters.find(ren => ren.id === r.renterId);
       const name = renter ? renter.name : 'A renter';
-      
+
       // Simple logic mapping based on record status
       if (r.rentPaid) {
         return { color: 'green', text: `${name} paid ${r.month} ${r.year} rent — ₹${r.totalAmount.toLocaleString('en-IN')}`, time: r.paidDate || 'Recently' };
@@ -55,35 +55,35 @@ export default function Dashboard({ renters, rentRecords }) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("No session");
-      
+
       const landlordId = session.user.id;
       const idMap = {}; // Maps old string ID -> new UUID
-      
-      // 1. Insert Renters
-      for (const r of seedData.renters) {
-        const payload = { ...r, landlord_id: landlordId };
-        const oldId = payload.original_id;
-        delete payload.original_id;
 
-        const { data, error } = await supabase.from('renters').insert([payload]).select().single();
-        if (data) {
-          idMap[oldId] = data.id;
-        } else {
-          console.error("Renter insert error:", error);
-        }
-      }
+      // 1. Insert Renters
+      // for (const r of seedData.renters) {
+      //   const payload = { ...r, landlord_id: landlordId };
+      //   const oldId = payload.original_id;
+      //   delete payload.original_id;
+
+      //   const { data, error } = await supabase.from('renters').insert([payload]).select().single();
+      //   if (data) {
+      //     idMap[oldId] = data.id;
+      //   } else {
+      //     console.error("Renter insert error:", error);
+      //   }
+      // }
 
       // 2. Insert Records
-      for (const p of seedData.payments) {
-        const newRenterId = idMap[p.original_renter_id];
-        if (!newRenterId) continue;
-        
-        const payload = { ...p, renter_id: newRenterId };
-        delete payload.original_renter_id;
-        
-        await supabase.from('rent_records').insert([payload]);
-      }
-      
+      // for (const p of seedData.payments) {
+      //   const newRenterId = idMap[p.original_renter_id];
+      //   if (!newRenterId) continue;
+
+      //   const payload = { ...p, renter_id: newRenterId };
+      //   delete payload.original_renter_id;
+
+      //   await supabase.from('rent_records').insert([payload]);
+      // }
+
       alert("Migration Complete! The page will now reload to fetch live data.");
       window.location.reload();
     } catch (err) {
@@ -104,7 +104,7 @@ export default function Dashboard({ renters, rentRecords }) {
         <div style={{ display: 'flex', gap: '10px' }}>
           {renters.length === 0 && (
             <button className="btn btn-secondary" onClick={handleMigrate} disabled={isMigrating}>
-              {isMigrating ? <Loader2 size={16} className="spin" /> : <Database size={16} />} 
+              {isMigrating ? <Loader2 size={16} className="spin" /> : <Database size={16} />}
               {isMigrating ? 'Migrating...' : 'Migrate Old Data'}
             </button>
           )}
@@ -155,7 +155,7 @@ export default function Dashboard({ renters, rentRecords }) {
         <div className="stat-card info">
           <div className="stat-header">
             <div className="stat-icon info"><TrendingUp size={20} /></div>
-            <span className="stat-trend" style={{color:'var(--accent-info)'}}>Expected</span>
+            <span className="stat-trend" style={{ color: 'var(--accent-info)' }}>Expected</span>
           </div>
           <div className="stat-value">₹{(expectedTotal / 1000).toFixed(1)}K</div>
           <div className="stat-label">Expected This Month</div>
@@ -201,7 +201,7 @@ export default function Dashboard({ renters, rentRecords }) {
           ) : (
             pendingThisMonth.map(renter => (
               <div key={renter.id}
-                   className="activity-item" onClick={() => navigate(`/renters/${renter.id}`)} style={{ cursor: 'pointer', padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                className="activity-item" onClick={() => navigate(`/renters/${renter.id}`)} style={{ cursor: 'pointer', padding: '10px 0', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div className="renter-avatar" style={{ width: '36px', height: '36px', fontSize: '12px' }}>{renter.avatar}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)' }}>{renter.name}</div>
