@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { X, Zap, Droplets, IndianRupee, MessageCircle, Calendar, CheckCircle } from 'lucide-react';
-import { MONTHS, PAYMENT_MODES, LIGHT_RATE_PER_UNIT } from '../../data/dummyData';
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const PAYMENT_MODES = ["Cash", "Online", "Bank Transfer", "Cheque"];
+const LIGHT_RATE_PER_UNIT = 10;
 
 const DEFAULT_FORM = {
   month: 'March', year: 2025,
