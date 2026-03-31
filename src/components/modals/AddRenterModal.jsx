@@ -42,66 +42,66 @@ export default function AddRenterModal({ onClose, onSave, initialData }) {
     });
   };
 
-  const inputStyle = (field) => `form-input${errors[field] ? ' form-input-error' : ''}`;
+  const inputStyle = (field) => `bg-[var(--bg-input)] border rounded-[var(--radius-sm)] px-3.5 py-2.5 text-[14px] font-semibold text-[var(--text-primary)] transition-all w-full focus:outline-none placeholder-[var(--text-muted)] ${errors[field] ? 'border-[var(--accent-danger)] focus:border-[var(--accent-danger)] focus:shadow-[0_0_0_3px_rgba(239,68,68,0.15)]' : 'border-[var(--border-color)] focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)]'}`;
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal animate-slide-up">
-        <div className="modal-header">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-center justify-center z-[200] animate-[fadeIn_0.2s_ease]" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="w-full max-w-[680px] max-h-[92vh] md:max-h-[90vh] overflow-y-auto bg-[var(--bg-modal)] md:border border-[var(--border-color)] rounded-t-3xl md:rounded-[var(--radius-xl)] p-5 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] animate-[slideUpSheet_0.3s_ease] md:animate-[slideUp_0.25s_ease] relative mt-auto md:mt-0">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <div className="modal-title">🏠 {isEditing ? 'Edit Renter' : 'Add New Renter'}</div>
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px' }}>
+            <div className="text-[18px] font-bold">🏠 {isEditing ? 'Edit Renter' : 'Add New Renter'}</div>
+            <div className="text-[13px] text-[var(--text-muted)] mt-[2px]">
               {isEditing ? 'Update renter details below' : 'Fill in the renter\'s details below'}
             </div>
           </div>
-          <button className="modal-close" onClick={onClose}><X size={16} /></button>
+          <button className="w-8 h-8 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] flex items-center justify-center transition-all cursor-pointer hover:border-[var(--accent-danger)] hover:text-[var(--accent-danger)]" onClick={onClose}><X size={16} /></button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="flex flex-col gap-5">
           {/* Personal Details */}
           <div>
-            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div className="text-[12px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3 flex items-center gap-1.5">
               <User size={13} /> Personal Details
             </div>
-            <div className="form-grid">
-              <div className="form-group">
-                <label className="form-label">Full Name *</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Full Name *</label>
                 <input className={inputStyle('name')} placeholder="e.g. Rahul Sharma" value={form.name} onChange={e => set('name', e.target.value)} />
-                {errors.name && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.name}</span>}
+                {errors.name && <span className="text-[11px] text-[var(--accent-danger)]">{errors.name}</span>}
               </div>
-              <div className="form-group">
-                <label className="form-label">Phone Number *</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Phone Number *</label>
                 <input className={inputStyle('phone')} placeholder="10-digit mobile number" value={form.phone} onChange={e => set('phone', e.target.value)} maxLength={10} inputMode="tel" />
-                {errors.phone && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.phone}</span>}
+                {errors.phone && <span className="text-[11px] text-[var(--accent-danger)]">{errors.phone}</span>}
               </div>
             </div>
           </div>
 
           {/* Room & Dates */}
           <div>
-            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div className="text-[12px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3 flex items-center gap-1.5">
               <Home size={13} /> Room & Dates
             </div>
-            <div className="form-grid">
-              <div className="form-group">
-                <label className="form-label">Room / Flat *</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Room / Flat *</label>
                 <input className={inputStyle('flat')} placeholder="e.g. Room 101, Flat 2B" value={form.flat} onChange={e => set('flat', e.target.value)} />
-                {errors.flat && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.flat}</span>}
+                {errors.flat && <span className="text-[11px] text-[var(--accent-danger)]">{errors.flat}</span>}
               </div>
-              <div className="form-group">
-                <label className="form-label">Move-In Date *</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Move-In Date *</label>
                 <input type="date" className={inputStyle('movedInDate')} value={form.movedInDate} onChange={e => set('movedInDate', e.target.value)} />
-                {errors.movedInDate && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.movedInDate}</span>}
+                {errors.movedInDate && <span className="text-[11px] text-[var(--accent-danger)]">{errors.movedInDate}</span>}
               </div>
               {/* Show Move-Out Date only when editing */}
               {isEditing && (
-                <div className="form-group">
-                  <label className="form-label">
-                    <Calendar size={11} style={{ display: 'inline', marginRight: '4px' }} />
-                    Move-Out Date <span style={{ color: 'var(--text-muted)', fontWeight: '400', textTransform: 'none', letterSpacing: '0' }}>(optional)</span>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">
+                    <Calendar size={11} className="inline mr-1" />
+                    Move-Out Date <span className="text-[var(--text-muted)] font-normal normal-case tracking-normal">(optional)</span>
                   </label>
-                  <input type="date" className="form-input" value={form.movedOutDate || ''} onChange={e => set('movedOutDate', e.target.value)} />
-                  <span className="form-hint">Set this if the renter has moved out</span>
+                  <input type="date" className="bg-[var(--bg-input)] border border-[var(--border-color)] rounded-[var(--radius-sm)] px-3.5 py-2.5 text-[14px] font-semibold text-[var(--text-primary)] transition-all w-full focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] placeholder-[var(--text-muted)]" value={form.movedOutDate || ''} onChange={e => set('movedOutDate', e.target.value)} />
+                  <span className="text-[11px] text-[var(--text-muted)] mt-[2px]">Set this if the renter has moved out</span>
                 </div>
               )}
             </div>
@@ -109,48 +109,48 @@ export default function AddRenterModal({ onClose, onSave, initialData }) {
 
           {/* Financial Details */}
           <div>
-            <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-accent)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div className="text-[12px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3 flex items-center gap-1.5">
               <IndianRupee size={13} /> Financial Details
             </div>
-            <div className="form-grid">
-              <div className="form-group">
-                <label className="form-label">Monthly Rent (₹) *</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Monthly Rent (₹) *</label>
                 <input type="number" className={inputStyle('monthlyRent')} placeholder="e.g. 8000" value={form.monthlyRent} onChange={e => set('monthlyRent', e.target.value)} inputMode="numeric" />
-                {errors.monthlyRent && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.monthlyRent}</span>}
+                {errors.monthlyRent && <span className="text-[11px] text-[var(--accent-danger)]">{errors.monthlyRent}</span>}
               </div>
-              <div className="form-group">
-                <label className="form-label">Initial Light Meter Reading *</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Initial Light Meter Reading *</label>
                 <input type="number" className={inputStyle('initialLightReading')} placeholder="e.g. 1245" value={form.initialLightReading} onChange={e => set('initialLightReading', e.target.value)} inputMode="numeric" />
-                {errors.initialLightReading && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.initialLightReading}</span>}
+                {errors.initialLightReading && <span className="text-[11px] text-[var(--accent-danger)]">{errors.initialLightReading}</span>}
               </div>
             </div>
-            <div style={{ marginTop: '16px' }}>
-              <div className="form-toggle" style={{ marginBottom: '10px' }}>
-                <input type="checkbox" id="advancePaid" className="toggle-input" checked={form.advancePaid} onChange={e => set('advancePaid', e.target.checked)} />
-                <label htmlFor="advancePaid" style={{ fontSize: '14px', color: 'var(--text-primary)', cursor: 'pointer', fontWeight: '500' }}>
+            <div className="mt-4">
+              <div className="flex items-center gap-2.5 mb-2.5">
+                <input type="checkbox" id="advancePaid" className="w-[18px] h-[18px] accent-[var(--accent-primary)] cursor-pointer" checked={form.advancePaid} onChange={e => set('advancePaid', e.target.checked)} />
+                <label htmlFor="advancePaid" className="text-[14px] color-[var(--text-primary)] cursor-pointer font-medium">
                   Advance Paid?
                 </label>
               </div>
               {form.advancePaid && (
-                <div className="form-group">
-                  <label className="form-label">Advance Amount (₹) *</label>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Advance Amount (₹) *</label>
                   <input type="number" className={inputStyle('advanceAmount')} placeholder="e.g. 5000" value={form.advanceAmount} onChange={e => set('advanceAmount', e.target.value)} inputMode="numeric" />
-                  {errors.advanceAmount && <span style={{ fontSize: '11px', color: 'var(--accent-danger)' }}>{errors.advanceAmount}</span>}
+                  {errors.advanceAmount && <span className="text-[11px] text-[var(--accent-danger)]">{errors.advanceAmount}</span>}
                 </div>
               )}
             </div>
           </div>
 
           {/* Notes */}
-          <div className="form-group">
-            <label className="form-label"><FileText size={12} style={{ display:'inline', marginRight:'4px' }} />Notes (optional)</label>
-            <textarea className="form-input" rows={2} placeholder="Any additional notes about this renter..." value={form.notes} onChange={e => set('notes', e.target.value)} style={{ resize: 'vertical' }} />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]"><FileText size={12} className="inline mr-1" />Notes (optional)</label>
+            <textarea className="bg-[var(--bg-input)] border border-[var(--border-color)] rounded-[var(--radius-sm)] px-3.5 py-2.5 text-[14px] font-semibold text-[var(--text-primary)] transition-all w-full focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] placeholder-[var(--text-muted)] resize-y" rows={2} placeholder="Any additional notes about this renter..." value={form.notes} onChange={e => set('notes', e.target.value)} />
           </div>
         </div>
 
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-          <button className="btn btn-primary" onClick={handleSubmit}>
+        <div className="flex flex-col-reverse md:flex-row justify-end gap-3 mt-6 pt-5 border-t border-[var(--border-color)]">
+          <button className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] hover:text-[var(--text-accent)]" onClick={onClose}>Cancel</button>
+          <button className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white shadow-[var(--shadow-accent)] hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(108,99,255,0.4)]" onClick={handleSubmit}>
             {isEditing ? '✓ Save Changes' : '+ Add Renter'}
           </button>
         </div>

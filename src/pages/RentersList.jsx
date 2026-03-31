@@ -54,22 +54,22 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
       )}
 
       {/* Page Header */}
-      <div className="page-header">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
-          <div className="page-title">{isInactiveTab ? 'Inactive Renters' : 'Active Renters'}</div>
-          <div className="page-subtitle">
+          <div className="text-[24px] md:text-[28px] font-extrabold text-[var(--text-primary)] tracking-tight mb-1">{isInactiveTab ? 'Inactive Renters' : 'Active Renters'}</div>
+          <div className="text-[14px] text-[var(--text-muted)] font-medium">
             {isInactiveTab
               ? `${inactiveRenters.length} renters currently inactive`
               : `${activeRenters.length} renters currently staying`}
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn btn-secondary" onClick={() => setShowExport(true)}>
+        <div className="flex gap-2.5">
+          <button className="inline-flex flex-1 md:flex-none items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--text-primary)] shadow-sm" onClick={() => setShowExport(true)}>
             <Download size={16} /> Export
           </button>
           {!isInactiveTab && (
-            <button className="btn btn-primary" onClick={handleAddClick}>
+            <button className="inline-flex flex-1 md:flex-none items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white shadow-[var(--shadow-accent)] hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(108,99,255,0.4)]" onClick={handleAddClick}>
               <Plus size={16} /> Add Renter
             </button>
           )}
@@ -77,26 +77,26 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
       </div>
 
       {/* Tabs + Search */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>
-        <div className="tabs">
+      <div className="flex flex-col md:flex-row items-center gap-4 mb-7 w-full">
+        <div className="flex p-1 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl w-full md:w-auto h-[48px]">
           <button
-            className={`tab-btn ${!isInactiveTab ? 'active' : ''}`}
+            className={`flex-1 flex items-center justify-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all ${!isInactiveTab ? 'bg-[var(--bg-body)] text-[var(--text-primary)] shadow-[0_2px_8px_rgba(0,0,0,0.08)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[rgba(0,0,0,0.02)] cursor-pointer'}`}
             onClick={() => navigate('/renters')}
           >
             ✅ Active ({activeRenters.length})
           </button>
           <button
-            className={`tab-btn ${isInactiveTab ? 'active' : ''}`}
+            className={`flex-1 flex items-center justify-center px-4 py-2 rounded-lg text-[13px] font-bold transition-all ${isInactiveTab ? 'bg-[var(--bg-body)] text-[var(--text-primary)] shadow-[0_2px_8px_rgba(0,0,0,0.08)]' : 'text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[rgba(0,0,0,0.02)] cursor-pointer'}`}
             onClick={() => navigate('/renters?tab=inactive')}
           >
             🚪 Inactive ({inactiveRenters.length})
           </button>
         </div>
 
-        <div className="search-bar" style={{ flex: 1, minWidth: '200px' }}>
-          <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
+        <div className="flex items-center bg-[var(--bg-input)] border border-[var(--border-color)] rounded-[var(--radius-sm)] px-4 py-0 transition-all focus-within:border-[var(--accent-primary)] focus-within:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] flex-1 min-w-[200px] h-[48px] w-full">
+          <Search size={16} className="text-[var(--text-muted)] shrink-0 mr-2.5" />
           <input
-            className="search-input"
+            className="p-4 flex-1 bg-transparent border-none text-[14px] font-medium text-[var(--text-primary)] placeholder:text-[var(--text-muted)] placeholder:font-normal focus:outline-none min-w-0"
             placeholder="Search by name, room, or phone..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
@@ -106,81 +106,81 @@ export default function RentersList({ renters, rentRecords, onAddRenter, onOpenA
 
       {/* Renters Grid */}
       {filtered.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-state-icon">🏠</div>
-          <div className="empty-state-title">No renters found</div>
-          <div className="empty-state-text">
+        <div className="flex flex-col items-center justify-center p-12 text-center bg-[var(--bg-card)] rounded-[var(--radius-lg)] border border-[var(--border-color)] border-dashed my-8">
+          <div className="text-[48px] mb-4 opacity-80 mix-blend-luminosity">🏠</div>
+          <div className="text-[18px] font-extrabold text-[var(--text-primary)] tracking-tight mb-2">No renters found</div>
+          <div className="text-[14px] text-[var(--text-muted)] max-w-[280px]">
             {searchQuery ? 'Try a different search term' : isInactiveTab ? 'No one has left yet' : 'Add your first renter to get started'}
           </div>
           {!isInactiveTab && !searchQuery && (
-            <button className="btn btn-primary" style={{ marginTop: '16px' }} onClick={handleAddClick}>
+            <button className="mt-6 inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-[var(--bg-body)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] shadow-sm" onClick={handleAddClick}>
               <Plus size={16} /> Add First Renter
             </button>
           )}
         </div>
       ) : (
-        <div className="renters-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-5 pb-8">
           {filtered.map(renter => {
             const lastPay = getLastPayment(renter.id);
             const pendingMarch = !isInactiveTab && isPendingPayer(renter.id);
             return (
-              <div key={renter.id} className="renter-card" onClick={() => navigate(`/renters/${renter.id}`)}>
+              <div key={renter.id} className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-5 relative transition-all duration-300 hover:-translate-y-[3px] hover:shadow-[var(--shadow-md)] cursor-pointer hover:border-[rgba(108,99,255,0.3)] flex flex-col h-full" onClick={() => navigate(`/renters/${renter.id}`)}>
                 {pendingMarch && (
-                  <div style={{ position: 'absolute', top: '14px', right: '14px' }}>
-                    <span className="badge badge-pending" style={{ fontSize: '10px' }}>⚠ Pending</span>
+                  <div className="absolute top-4 right-4">
+                    <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-[0.05em] bg-[rgba(245,158,11,0.1)] text-[#f59e0b] border border-[rgba(245,158,11,0.2)]">⚠ Pending</span>
                   </div>
                 )}
-                <div className="renter-header">
-                  <div className="renter-avatar">{renter.avatar}</div>
-                  <div className="renter-info">
-                    <div className="renter-name">{renter.name}</div>
-                    <div className="renter-flat">
-                      <Home size={11} style={{ display: 'inline', marginRight: '4px' }} />
+                <div className="flex items-start gap-4 mb-5 border-b border-[var(--border-color)] pb-5">
+                  <div className="w-12 h-12 rounded-full font-extrabold text-[15px] bg-gradient-to-br from-[var(--bg-input)] to-[var(--bg-body)] text-[var(--text-secondary)] border border-[var(--border-color)] flex items-center justify-center shrink-0 shadow-sm">{renter.avatar}</div>
+                  <div className="flex flex-col justify-center min-w-0 pr-12">
+                    <div className="text-[16px] font-extrabold text-[var(--text-primary)] tracking-tight truncate leading-tight mb-1">{renter.name}</div>
+                    <div className="text-[13px] font-semibold text-[var(--text-secondary)] flex items-center truncate">
+                      <Home size={11} className="inline mr-1" />
                       {renter.flat}
                     </div>
-                    <div style={{ marginTop: '6px' }}>
-                      <span className={`badge ${renter.status === 'active' ? 'badge-active' : 'badge-left'}`}>
+                    <div className="mt-2">
+                      <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[11px] font-bold uppercase tracking-[0.05em] border ${renter.status === 'active' ? 'bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.2)]' : 'bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border-[rgba(239,68,68,0.2)]'}`}>
                         {renter.status === 'active' ? '● Active' : '● Inactive'}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="renter-details">
-                  <div className="renter-detail-row">
-                    <Phone className="renter-detail-icon" size={13} />
+                <div className="flex flex-col gap-3 mb-5 flex-1">
+                  <div className="flex items-center text-[13px] text-[var(--text-secondary)] font-medium">
+                    <Phone className="text-[var(--text-muted)] mr-2 shrink-0" size={14} />
                     {renter.phone}
                   </div>
-                  <div className="renter-detail-row">
-                    <Calendar className="renter-detail-icon" size={13} />
+                  <div className="flex items-center text-[13px] text-[var(--text-secondary)] font-medium">
+                    <Calendar className="text-[var(--text-muted)] mr-2 shrink-0" size={14} />
                     Moved in: {new Date(renter.movedInDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </div>
                   {renter.movedOutDate && (
-                    <div className="renter-detail-row">
-                      <Calendar className="renter-detail-icon" size={13} />
+                    <div className="flex items-center text-[13px] text-[var(--accent-danger)] font-medium">
+                      <Calendar className="text-[var(--accent-danger)] opacity-80 mr-2 shrink-0" size={14} />
                       Moved out: {new Date(renter.movedOutDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </div>
                   )}
                   {renter.advancePaid && (
-                    <div className="renter-detail-row">
-                      <IndianRupee className="renter-detail-icon" size={13} />
+                    <div className="flex items-center text-[13px] text-[var(--text-secondary)] font-medium">
+                      <IndianRupee className="text-[var(--text-muted)] mr-2 shrink-0" size={14} />
                       Advance: ₹{renter.advanceAmount.toLocaleString()}
-                      <span className="badge badge-paid" style={{ fontSize: '9px', padding: '1px 6px' }}>Paid</span>
+                      <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-[0.05em] bg-[rgba(34,197,94,0.1)] text-[#22c55e] border border-[rgba(34,197,94,0.2)] ml-2">Paid</span>
                     </div>
                   )}
                   {lastPay && (
-                    <div className="renter-detail-row" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    <div className="flex items-center text-[11px] text-[var(--text-muted)] font-medium mt-1">
                       Last paid: {lastPay.month} {lastPay.year} via {lastPay.paymentMode}
                     </div>
                   )}
                 </div>
 
-                <div className="renter-footer">
+                <div className="flex items-center justify-between pt-4 border-t border-[var(--border-color)]">
                   <div>
-                    <div className="renter-rent">₹{renter.monthlyRent.toLocaleString()}</div>
-                    <div className="renter-rent-label">per month</div>
+                    <div className="text-[20px] font-extrabold text-[var(--text-primary)] tracking-tight leading-none mb-1">₹{renter.monthlyRent.toLocaleString()}</div>
+                    <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">per month</div>
                   </div>
-                  <button className="btn btn-secondary btn-sm" onClick={e => { e.stopPropagation(); navigate(`/renters/${renter.id}`); }}>
+                  <button className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-lg text-[12px] font-semibold transition-all cursor-pointer bg-[var(--bg-body)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--text-primary)] shadow-sm" onClick={e => { e.stopPropagation(); navigate(`/renters/${renter.id}`); }}>
                     View Details →
                   </button>
                 </div>

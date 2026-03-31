@@ -33,38 +33,37 @@ export default function Auth() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', background: 'var(--bg-primary)' }}>
-      <div className="card animate-slide-up" style={{ width: '100%', maxWidth: '400px', padding: '32px 24px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '56px', height: '56px', borderRadius: '16px', background: 'var(--accent-primary)', color: 'white', marginBottom: '16px', boxShadow: '0 8px 24px rgba(108,99,255,0.3)' }}>
+    <div className="min-h-screen flex items-center justify-center p-5 bg-[var(--bg-primary)]">
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] shadow-md w-full max-w-[400px] p-8 md:px-6 animate-[slideUp_0.3s_ease]">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white mb-4 shadow-[0_8px_24px_rgba(108,99,255,0.3)]">
             <Home size={28} strokeWidth={2} />
           </div>
-          <h1 style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 4px', color: 'var(--text-primary)' }}>TenantPro</h1>
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Sign in to manage your properties</p>
+          <h1 className="text-[24px] font-extrabold m-0 mb-1 text-[var(--text-primary)]">TenantPro</h1>
+          <p className="text-[14px] text-[var(--text-muted)]">Sign in to manage your properties</p>
         </div>
 
         {error && (
-          <div className="form-display form-display-warning" style={{ marginBottom: '20px', color: '#b91c1c', backgroundColor: '#fef2f2', borderColor: '#f87171' }}>
-            <AlertCircle size={16} style={{ flexShrink: 0 }} />
-            <span style={{ flex: 1, fontSize: '12px' }}>{error}</span>
+          <div className="flex items-start gap-3 p-3 mb-5 rounded-lg border border-[#f87171] bg-[#fef2f2] text-[#b91c1c]">
+            <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <span className="flex-1 text-[12px] font-medium leading-relaxed">{error}</span>
           </div>
         )}
 
         {msg && (
-          <div className="form-display form-display-success" style={{ marginBottom: '20px' }}>
-            <span style={{ flex: 1, fontSize: '12px' }}>{msg}</span>
+          <div className="flex items-start gap-3 p-3 mb-5 rounded-lg border border-[rgba(34,197,94,0.3)] bg-[rgba(34,197,94,0.1)] text-[#22c55e]">
+            <span className="flex-1 text-[12px] font-medium leading-relaxed">{msg}</span>
           </div>
         )}
 
-        <form onSubmit={handleAuth} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div className="form-group">
-            <label className="form-label">Email Address</label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={16} style={{ position: 'absolute', left: '12px', top: '13px', color: 'var(--text-muted)' }} />
+        <form onSubmit={handleAuth} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12px] font-bold text-[var(--text-primary)] mb-1">Email Address</label>
+            <div className="relative">
+              <Mail size={16} className="absolute left-3 top-[13px] text-[var(--text-muted)]" />
               <input
                 type="email"
-                className="form-input"
-                style={{ paddingLeft: '38px' }}
+                className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl py-3 pr-4 pl-[38px] text-[14px] text-[var(--text-primary)] transition-all focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] placeholder:text-[var(--text-muted)] hover:border-[var(--border-hover)]"
                 placeholder="you@example.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -73,14 +72,13 @@ export default function Auth() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Password</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={16} style={{ position: 'absolute', left: '12px', top: '13px', color: 'var(--text-muted)' }} />
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[12px] font-bold text-[var(--text-primary)] mb-1">Password</label>
+            <div className="relative">
+              <Lock size={16} className="absolute left-3 top-[13px] text-[var(--text-muted)]" />
               <input
                 type="password"
-                className="form-input"
-                style={{ paddingLeft: '38px' }}
+                className="w-full bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl py-3 pr-4 pl-[38px] text-[14px] text-[var(--text-primary)] transition-all focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] placeholder:text-[var(--text-muted)] hover:border-[var(--border-hover)]"
                 placeholder="••••••••"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -90,14 +88,14 @@ export default function Auth() {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '8px', padding: '14px', fontSize: '15px' }} disabled={loading}>
-            {loading ? <Loader2 size={18} className="spin" /> : (mode === 'login' ? 'Sign In' : 'Create Account')}
+          <button type="submit" className="w-full mt-2 inline-flex items-center justify-center gap-2 p-3.5 rounded-xl text-[15px] font-bold transition-all cursor-pointer bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white shadow-[var(--shadow-accent)] hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(108,99,255,0.4)] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none" disabled={loading}>
+            {loading ? <Loader2 size={18} className="animate-spin" /> : (mode === 'login' ? 'Sign In' : 'Create Account')}
           </button>
         </form>
 
-        <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '13px', color: 'var(--text-secondary)' }}>
+        <div className="mt-6 text-center text-[13px] text-[var(--text-secondary)]">
           {mode === 'login' ? "Don't have an account? " : "Already have an account? "}
-          <button style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', fontWeight: '600', cursor: 'pointer', padding: 0 }} onClick={() => { setMode(m => m === 'login' ? 'signup' : 'login'); setError(null); setMsg(null); }}>
+          <button className="bg-transparent border-none text-[var(--accent-primary)] font-semibold cursor-pointer p-0 hover:text-[var(--accent-primary-hover)] transition-colors inline-block" onClick={() => { setMode(m => m === 'login' ? 'signup' : 'login'); setError(null); setMsg(null); }}>
             {mode === 'login' ? 'Sign up' : 'Sign in'}
           </button>
         </div>

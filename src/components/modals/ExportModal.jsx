@@ -41,37 +41,37 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
   };
 
   return (
-    <div className="modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal animate-slide-up" style={{ maxWidth: '480px' }}>
-        <div className="modal-header">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] px-4" onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="w-full max-w-[480px] bg-[var(--bg-modal)] md:border border-[var(--border-color)] rounded-b-none rounded-t-3xl md:rounded-[var(--radius-xl)] p-5 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] animate-[slideUpSheet_0.3s_ease] md:animate-[slideUp_0.25s_ease] relative mt-auto md:mt-0 flex flex-col">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <div className="modal-title"><Download size={18} style={{ display:'inline', marginRight:'8px' }} />Export Data</div>
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px' }}>Choose format and scope</div>
+            <div className="text-[18px] font-bold"><Download size={18} className="inline mr-2" />Export Data</div>
+            <div className="text-[13px] text-[var(--text-muted)] mt-[2px]">Choose format and scope</div>
           </div>
-          <button className="modal-close" onClick={onClose}><X size={16} /></button>
+          <button className="w-8 h-8 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] flex items-center justify-center transition-all cursor-pointer hover:border-[var(--accent-danger)] hover:text-[var(--accent-danger)]" onClick={onClose}><X size={16} /></button>
         </div>
 
         {done ? (
-          <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(62,207,142,0.12)', border: '2px solid var(--accent-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: 'var(--accent-secondary)' }}>
+          <div className="text-center py-8 px-4">
+            <div className="w-16 h-16 rounded-full bg-[rgba(62,207,142,0.12)] border-2 border-[var(--accent-secondary)] flex items-center justify-center mx-auto mb-4 text-[var(--accent-secondary)] shadow-[0_4px_16px_rgba(62,207,142,0.2)]">
               <CheckCircle size={28} />
             </div>
-            <div style={{ fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>Download started!</div>
-            <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '8px' }}>Your file is being downloaded…</div>
+            <div className="text-[18px] font-bold text-[var(--text-primary)]">Download started!</div>
+            <div className="text-[13px] text-[var(--text-muted)] mt-2">Your file is being downloaded…</div>
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
+          <div className="flex flex-col gap-5">
             {/* ── Format ── */}
             <div>
-              <div className="export-section-label">📄 File Format</div>
-              <div className="export-format-grid">
+              <div className="text-[11px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3">📄 File Format</div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {FORMATS.map(f => (
-                  <button key={f.id} className={`export-format-card ${format === f.id ? 'selected' : ''}`}
+                  <button key={f.id} 
+                    className={`flex flex-col items-center justify-center p-3.5 rounded-xl border transition-all duration-200 cursor-pointer text-center bg-[var(--bg-card)] ${format === f.id ? 'border-[color:var(--fmt-color)] bg-[color:color-mix(in_srgb,var(--fmt-color)_8%,transparent)] shadow-[0_4px_16px_color-mix(in_srgb,var(--fmt-color)_20%,transparent)] -translate-y-[2px]' : 'border-[var(--border-color)] hover:border-[var(--text-muted)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]'}`}
                     onClick={() => setFormat(f.id)} style={{ '--fmt-color': f.color }}>
-                    <f.icon size={22} style={{ color: f.color }} />
-                    <div className="export-format-label">{f.label}</div>
-                    <div className="export-format-desc">{f.desc}</div>
+                    <f.icon size={22} className={`mb-2 transition-all ${format === f.id ? '' : 'grayscale opacity-50'}`} style={{ color: format === f.id ? f.color : undefined }} />
+                    <div className={`text-[13px] font-bold mb-1 ${format === f.id ? 'text-[var(--text-primary)]' : ''}`}>{f.label}</div>
+                    <div className="text-[10px] opacity-80 font-medium leading-[1.3]">{f.desc}</div>
                   </button>
                 ))}
               </div>
@@ -79,20 +79,20 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
 
             {/* ── Scope ── */}
             <div>
-              <div className="export-section-label">🎯 Export Scope</div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button className={`export-scope-btn ${scope === 'all' ? 'active' : ''}`} onClick={() => setScope('all')}>
+              <div className="text-[11px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3">🎯 Export Scope</div>
+              <div className="flex gap-2.5">
+                <button className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all border cursor-pointer ${scope === 'all' ? 'bg-[rgba(108,99,255,0.1)] border-[var(--accent-primary)] text-[var(--accent-primary)]' : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]'}`} onClick={() => setScope('all')}>
                   <Users size={16} /> All Renters ({renters.length})
                 </button>
-                <button className={`export-scope-btn ${scope === 'single' ? 'active' : ''}`} onClick={() => setScope('single')}>
+                <button className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all border cursor-pointer ${scope === 'single' ? 'bg-[rgba(108,99,255,0.1)] border-[var(--accent-primary)] text-[var(--accent-primary)]' : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]'}`} onClick={() => setScope('single')}>
                   <User size={16} /> Single Renter
                 </button>
               </div>
 
               {scope === 'single' && (
-                <div className="form-group" style={{ marginTop: '14px' }}>
-                  <label className="form-label">Select Renter</label>
-                  <select className="form-select" value={selectedRenterId} onChange={e => setSelectedRenterId(e.target.value)}>
+                <div className="flex flex-col gap-1.5 mt-3.5">
+                  <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Select Renter</label>
+                  <select className="bg-[var(--bg-input)] border border-[var(--border-color)] rounded-[var(--radius-sm)] px-3.5 py-2.5 text-[14px] font-semibold text-[var(--text-primary)] transition-all w-full focus:outline-none focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)] placeholder-[var(--text-muted)] appearance-none cursor-pointer" value={selectedRenterId} onChange={e => setSelectedRenterId(e.target.value)}>
                     {activeRenters.length > 0 && (
                       <optgroup label="Active Renters">
                         {activeRenters.map(r => <option key={r.id} value={r.id}>{r.name} — {r.flat}</option>)}
@@ -105,7 +105,7 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
                     )}
                   </select>
                   {selectedRenter && (
-                    <div style={{ marginTop: '8px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                    <div className="mt-2 text-[12px] text-[var(--text-muted)] font-medium">
                       {rentRecords.filter(r => r.renterId === selectedRenter.id).length} rent record(s) will be included
                     </div>
                   )}
@@ -114,9 +114,10 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
             </div>
 
             {/* ── Preview ── */}
-            <div className="export-preview-box">
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '4px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>What's included</div>
-              <div style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.7' }}>
+            <div className="mt-2 p-4 bg-[var(--bg-card)] border border-[rgba(108,99,255,0.15)] rounded-[var(--radius-md)] relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-1 h-full bg-[var(--accent-primary)]" />
+              <div className="text-[11px] text-[var(--text-muted)] mb-1 font-bold uppercase tracking-[0.08em]">What's included</div>
+              <div className="text-[13px] text-[var(--text-secondary)] leading-[1.7]">
                 {scope === 'all'
                   ? `All ${renters.length} renters with their complete rent history (${rentRecords.length} records total)`
                   : selectedRenter
@@ -124,17 +125,16 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
                     : 'Select a renter above'}
               </div>
               {format === 'excel' && scope === 'all' && (
-                <div style={{ fontSize: '11px', color: 'var(--text-accent)', marginTop: '6px' }}>✦ Excel includes a Summary sheet with totals per renter</div>
+                <div className="text-[11px] text-[var(--accent-primary)] mt-1.5 font-semibold">✦ Excel includes a Summary sheet with totals per renter</div>
               )}
             </div>
           </div>
         )}
 
         {!done && (
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
-            <button className="btn btn-primary" onClick={handleExport} disabled={scope === 'single' && !selectedRenter}
-              style={{ gap: '8px' }}>
+          <div className="flex flex-col-reverse md:flex-row justify-end gap-3 mt-6 pt-5 border-t border-[var(--border-color)]">
+            <button className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-[var(--bg-card)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--accent-primary)] hover:text-[var(--text-accent)]" onClick={onClose}>Cancel</button>
+            <button className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white shadow-[var(--shadow-accent)] hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(108,99,255,0.4)] disabled:opacity-50 disabled:cursor-not-allowed" onClick={handleExport} disabled={scope === 'single' && !selectedRenter}>
               <Download size={15} />
               Export {format.toUpperCase()}
             </button>

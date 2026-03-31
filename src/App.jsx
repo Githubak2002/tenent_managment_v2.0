@@ -246,8 +246,8 @@ export default function App() {
 
   if (isAuthLoading) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)' }}>
-        <Loader2 size={32} className="spin" style={{ color: 'var(--accent-primary)' }} />
+      <div className="h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+        <Loader2 size={32} className="animate-spin text-[var(--accent-primary)]" />
       </div>
     );
   }
@@ -258,10 +258,10 @@ export default function App() {
 
   if (isDataLoading && renters.length === 0) {
     return (
-      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)' }}>
-        <div style={{ textAlign: 'center' }}>
-          <Loader2 size={32} className="spin" style={{ color: 'var(--accent-primary)', margin: '0 auto 16px' }} />
-          <p style={{ color: 'var(--text-muted)' }}>Loading your properties...</p>
+      <div className="h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+        <div className="text-center">
+          <Loader2 size={32} className="animate-spin text-[var(--accent-primary)] mx-auto mb-4" />
+          <p className="text-[var(--text-muted)]">Loading your properties...</p>
         </div>
       </div>
     );
