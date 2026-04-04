@@ -9,8 +9,9 @@ export default function Dashboard({ renters, rentRecords }) {
   const activeRenters = renters.filter(r => r.status === 'active');
   const leftRenters = renters.filter(r => r.status === 'left');
 
-  const currentMonth = MONTHS[2]; // March
-  const currentYear = 2025;
+  const currentDate = new Date();
+  const currentMonth = MONTHS[currentDate.getMonth()];
+  const currentYear = currentDate.getFullYear();
 
   const currentMonthRecords = rentRecords.filter(r => r.month === currentMonth && r.year === currentYear);
   const paidThisMonth = currentMonthRecords.filter(r => r.rentPaid);
@@ -51,7 +52,7 @@ export default function Dashboard({ renters, rentRecords }) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <div className="text-[24px] md:text-[28px] font-extrabold text-[var(--text-primary)] tracking-tight mb-1">Good evening! 👋</div>
-          <div className="text-[14px] text-[var(--text-muted)] font-medium">Here's what's happening with your properties in March 2025</div>
+          <div className="text-[14px] text-[var(--text-muted)] font-medium">Here's what's happening with your properties in {currentMonth} {currentYear}</div>
         </div>
         <div className="flex gap-2.5">
           <button className="inline-flex flex-1 md:flex-none items-center justify-center gap-2 px-4.5 py-2.5 rounded-[var(--radius-md)] text-[13px] font-semibold transition-all cursor-pointer bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] text-white shadow-[var(--shadow-accent)] hover:-translate-y-px hover:shadow-[0_6px_24px_rgba(108,99,255,0.4)]" onClick={() => navigate('/renters')}>
@@ -120,7 +121,7 @@ export default function Dashboard({ renters, rentRecords }) {
       {/* Collection Progress */}
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-5 md:p-6 mb-6">
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-color)]">
-          <div className="text-[15px] font-bold text-[var(--text-primary)] tracking-tight">March 2025 Collection Progress</div>
+          <div className="text-[15px] font-bold text-[var(--text-primary)] tracking-tight">{currentMonth} {currentYear} Collection Progress</div>
           <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[11px] font-bold uppercase tracking-[0.05em] bg-[rgba(34,197,94,0.1)] text-[#22c55e] border border-[rgba(34,197,94,0.2)]">{collectionRate}% collected</span>
         </div>
         <div className="w-full h-2 bg-[var(--bg-input)] rounded-full overflow-hidden mb-2.5">
