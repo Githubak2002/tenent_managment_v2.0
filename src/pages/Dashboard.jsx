@@ -1,13 +1,21 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, UserCheck, UserX, IndianRupee, TrendingUp, Home, AlertCircle, CheckCircle, Clock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { Users, UserCheck, UserX, IndianRupee, TrendingUp, Home, AlertCircle, CheckCircle, Clock, ArrowRight } from 'lucide-react';
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-export default function Dashboard({ renters, rentRecords }) {
+function getGreeting(user) {
+  const hour = new Date().getHours();
+  const timeGreet = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  // Get display name: from metadata (email signup) or from email (Google)
+  const meta = user?.user_metadata;
+  const name = meta?.full_name || meta?.name || (user?.email ? user.email.split('@')[0] : null);
+  return name ? `${timeGreet}, ${name.split(' ')[0]}! 👋` : `${timeGreet}! 👋`;
+}
+
+export default function Dashboard({ renters, rentRecords, user }) {
   const navigate = useNavigate();
 
   const activeRenters = renters.filter(r => r.status === 'active');
-  const leftRenters = renters.filter(r => r.status === 'left');
+  const leftRenters = renters.filter(r => r.status === 'inactive');
 
   const currentDate = new Date();
   const currentMonth = MONTHS[currentDate.getMonth()];
@@ -15,9 +23,20 @@ export default function Dashboard({ renters, rentRecords }) {
 
   const currentMonthRecords = rentRecords.filter(r => r.month === currentMonth && r.year === currentYear);
   const paidThisMonth = currentMonthRecords.filter(r => r.rentPaid);
-  const pendingThisMonth = activeRenters.filter(r => !rentRecords.find(rec => rec.renterId === r.id && rec.month === currentMonth && rec.year === currentYear && rec.rentPaid));
+  // A renter is pending only if they have NO record with rentPaid===true for this month
+  const pendingThisMonth = activeRenters.filter(r => {
+    const rec = rentRecords.find(rec =>
+      String(rec.renterId) === String(r.id) &&
+      rec.month === currentMonth &&
+      rec.year === currentYear
+    );
+    return !rec || rec.rentPaid !== true;
+  });
 
-  const totalCollected = paidThisMonth.reduce((sum, r) => sum + r.totalAmount, 0);
+  // totalCollected = sum of amount actually received this month (amountPaid when set, else totalAmount if fully paid)
+  const totalCollected = currentMonthRecords
+    .filter(r => r.rentPaid || (r.amountPaid != null && r.amountPaid > 0))
+    .reduce((sum, r) => sum + (r.amountPaid != null ? r.amountPaid : r.totalAmount), 0);
   const expectedTotal = activeRenters.reduce((sum, r) => sum + r.monthlyRent, 0);
   const collectionRate = activeRenters.length > 0 ? Math.round((paidThisMonth.length / activeRenters.length) * 100) : 0;
 
@@ -51,7 +70,7 @@ export default function Dashboard({ renters, rentRecords }) {
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <div className="text-[24px] md:text-[28px] font-extrabold text-[var(--text-primary)] tracking-tight mb-1">Good evening! 👋</div>
+          <div className="text-[26px] md:text-[30px] font-extrabold text-[var(--text-primary)] tracking-tight mb-1">{getGreeting(user)}</div>
           <div className="text-[14px] text-[var(--text-muted)] font-medium">Here's what's happening with your properties in {currentMonth} {currentYear}</div>
         </div>
         <div className="flex gap-2.5">
@@ -62,7 +81,7 @@ export default function Dashboard({ renters, rentRecords }) {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-5 mb-7">
+      <div className="grid grid-cols-2 md:grid-cols-3  gap-3 md:gap-5 mb-7">
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-4 md:p-5 flex flex-col relative overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] group">
           <div className="flex items-center justify-between mb-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--accent-primary)] bg-[rgba(108,99,255,0.1)] group-hover:scale-110 transition-transform"><Home size={20} /></div>
@@ -111,14 +130,44 @@ export default function Dashboard({ renters, rentRecords }) {
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-4 md:p-5 flex flex-col relative overflow-hidden transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-md)] group">
           <div className="flex items-center justify-between mb-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[var(--accent-danger)] bg-[rgba(239,68,68,0.1)] group-hover:scale-110 transition-transform"><UserX size={20} /></div>
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)]">moved out</span>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)]">Inactive</span>
           </div>
           <div className="text-[24px] md:text-[28px] font-extrabold text-[var(--text-primary)] mt-auto leading-none mb-1 tracking-tight">{leftRenters.length}</div>
           <div className="text-[12px] md:text-[13px] font-semibold text-[var(--text-secondary)]">Renters Left</div>
         </div>
       </div>
 
-      {/* Collection Progress */}
+      {/* KPI summary strip — desktop only */}
+      <div className="hidden md:flex items-center gap-0 mb-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] overflow-hidden divide-x divide-[var(--border-color)]">
+        <div className="flex-1 flex items-center gap-3 px-5 py-3.5">
+          <CheckCircle size={15} className="text-[#22c55e] shrink-0" />
+          <div>
+            <div className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider">Collected</div>
+            <div className="text-[15px] font-extrabold text-[var(--text-primary)]">₹{totalCollected.toLocaleString()}</div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center gap-3 px-5 py-3.5">
+          <TrendingUp size={15} className="text-[var(--accent-info)] shrink-0" />
+          <div>
+            <div className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider">Expected</div>
+            <div className="text-[15px] font-extrabold text-[var(--text-primary)]">₹{expectedTotal.toLocaleString()}</div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center gap-3 px-5 py-3.5">
+          <Clock size={15} className="text-[#f59e0b] shrink-0" />
+          <div>
+            <div className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider">Pending</div>
+            <div className="text-[15px] font-extrabold text-[var(--accent-danger)]">₹{Math.max(0, expectedTotal - totalCollected).toLocaleString()}</div>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center gap-3 px-5 py-3.5">
+          <Home size={15} className="text-[var(--accent-primary)] shrink-0" />
+          <div>
+            <div className="text-[11px] text-[var(--text-muted)] font-medium uppercase tracking-wider">Collection Rate</div>
+            <div className="text-[15px] font-extrabold text-[var(--text-primary)]">{collectionRate}%</div>
+          </div>
+        </div>
+      </div>
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-5 md:p-6 mb-6">
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-[var(--border-color)]">
           <div className="text-[15px] font-bold text-[var(--text-primary)] tracking-tight">{currentMonth} {currentYear} Collection Progress</div>
@@ -143,7 +192,7 @@ export default function Dashboard({ renters, rentRecords }) {
           <div className="overflow-y-auto flex-1 pr-1 custom-scrollbar">
             {pendingThisMonth.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-8 text-center bg-[var(--bg-body)] rounded-xl border border-[var(--border-color)] border-dashed">
-                <div className="text-[32px] mb-2 opacity-80 mix-blend-luminosity">🎉</div>
+                <div className="text-[32px] mb-2 opacity-70">🎉</div>
                 <div className="text-[14px] font-semibold text-[var(--text-primary)] mb-1">All paid!</div>
               </div>
             ) : (

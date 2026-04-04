@@ -4,8 +4,12 @@ import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard';
 import RentersList from './pages/RentersList';
 import RenterDetail from './pages/RenterDetail';
+import Profile from './pages/Profile';
 import AddRenterModal from './components/modals/AddRenterModal';
+import ImportModal from './components/modals/ImportModal';
+import ExportModal from './components/modals/ExportModal';
 import Auth from './pages/Auth';
+import ResetPassword from './pages/ResetPassword';
 import { supabase } from './lib/supabase';
 import './index.css';
 import { Loader2 } from 'lucide-react';
@@ -36,6 +40,8 @@ export default function App() {
   const [isDataLoading, setIsDataLoading] = useState(false);
   
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   // 1. Check Auth Session
@@ -242,6 +248,27 @@ export default function App() {
     }
   };
 
+  // ── Bulk Import (from ImportModal) ───────────────────────────────────────
+  const importRenters = async (rentersToAdd, recordsToAdd, renterMap) => {
+    for (const r of rentersToAdd) {
+      const key = r._key || `${r.name}__${r.phone}`;
+      const dbPayload = mapRenterToDB({ ...r, initialLightReading: r.initialLightReading || 0 });
+      const { data, error } = await supabase.from('renters').insert([dbPayload]).select().single();
+      if (!error && data) {
+        const newRenter = mapRenterFromDB(data);
+        setRenters(prev => [newRenter, ...prev]);
+        // Insert related records
+        const myRecs = recordsToAdd.filter(rec => rec._renterKey === key);
+        for (const rec of myRecs) {
+          const { _renterKey, paymentStatus, ...recClean } = rec;
+          const recPayload = mapRecordToDB({ ...recClean, renterId: data.id });
+          const { data: rd } = await supabase.from('rent_records').insert([recPayload]).select().single();
+          if (rd) setRentRecords(prev => [mapRecordFromDB(rd), ...prev]);
+        }
+      }
+    }
+  };
+
   // ── Render ──
 
   if (isAuthLoading) {
@@ -250,6 +277,11 @@ export default function App() {
         <Loader2 size={32} className="animate-spin text-[var(--accent-primary)]" />
       </div>
     );
+  }
+
+  // Handle password reset deep link — show before auth guard
+  if (typeof window !== 'undefined' && (window.location.hash.includes('type=recovery') || window.location.pathname === '/reset-password')) {
+    return <BrowserRouter><Routes><Route path="*" element={<ResetPassword />} /></Routes></BrowserRouter>;
   }
 
   if (!session) {
@@ -269,11 +301,11 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Layout onAddRenter={() => setShowAddModal(true)} theme={theme} onToggleTheme={toggleTheme} onSignOut={() => supabase.auth.signOut()}>
+      <Layout onAddRenter={() => setShowAddModal(true)} theme={theme} onToggleTheme={toggleTheme} onSignOut={() => supabase.auth.signOut()} user={session?.user} onShowImport={() => setShowImportModal(true)} onShowExport={() => setShowExportModal(true)}>
         <Routes>
-          <Route path="/" element={<Dashboard renters={renters} rentRecords={rentRecords} />} />
+          <Route path="/" element={<Dashboard renters={renters} rentRecords={rentRecords} user={session?.user} />} />
           <Route path="/renters" element={
-            <RentersList renters={renters} rentRecords={rentRecords} onAddRenter={addRenter} onOpenAddModal={() => setShowAddModal(true)} />
+            <RentersList renters={renters} rentRecords={rentRecords} onAddRenter={addRenter} onOpenAddModal={() => setShowAddModal(true)} onImport={importRenters} />
           } />
           <Route path="/renters/:id" element={
             <RenterDetail
@@ -286,6 +318,7 @@ export default function App() {
               onDeleteRentRecord={deleteRentRecord}
             />
           } />
+          <Route path="/profile" element={<Profile user={session?.user} onSignOut={() => supabase.auth.signOut()} />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
@@ -295,7 +328,21 @@ export default function App() {
             onSave={(data) => { addRenter(data); setShowAddModal(false); }}
           />
         )}
+        {showImportModal && (
+          <ImportModal
+            onClose={() => setShowImportModal(false)}
+            onImport={importRenters}
+          />
+        )}
+        {showExportModal && (
+          <ExportModal
+            renters={renters}
+            rentRecords={rentRecords}
+            onClose={() => setShowExportModal(false)}
+          />
+        )}
       </Layout>
     </BrowserRouter>
   );
+
 }

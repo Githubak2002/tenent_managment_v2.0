@@ -11,7 +11,7 @@ export default function DeleteConfirmModal({ title, description, onClose, onConf
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] px-4" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-end md:items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] px-4 md:pl-[260px] md:pt-[72px] md:pb-4" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="w-full max-w-[420px] bg-[var(--bg-modal)] md:border border-[var(--border-color)] rounded-3xl md:rounded-[var(--radius-xl)] p-6 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] animate-[slideUpSheet_0.3s_ease] md:animate-[slideUp_0.25s_ease] mt-auto md:mt-0 relative flex flex-col items-center text-center">
         
         {/* Close */}

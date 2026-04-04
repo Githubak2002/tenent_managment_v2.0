@@ -1,9 +1,12 @@
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, Building2, Plus, Sun, Moon, Home, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Building2, Plus, Sun, Moon, Home, LogOut, UserCircle, Upload, Download } from 'lucide-react';
 
-export default function Layout({ children, onAddRenter, theme, onToggleTheme, onSignOut }) {
+export default function Layout({ children, onAddRenter, theme, onToggleTheme, onSignOut, user, onShowImport, onShowExport }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const now = new Date();
+  const dateChip = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+  const isProfilePage = location.pathname === '/profile';
 
   const isRentersPage = location.pathname.startsWith('/renters');
   const isLeftTab = location.search.includes('tab=inactive');
@@ -22,7 +25,7 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
             <Home size={22} strokeWidth={1.8} />
           </div>
           <div>
-            <div className="text-base font-bold text-[var(--text-primary)]">TenantPro</div>
+            <div className="text-base font-bold text-[var(--text-primary)]">AkTenent</div>
             <div className="text-[11px] text-[var(--text-muted)] font-normal">Property Manager</div>
           </div>
         </div>
@@ -39,6 +42,25 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
             <Users className={`w-[18px] h-[18px] shrink-0 ${isRentersPage ? 'text-[var(--accent-primary)]' : ''}`} size={18} />
             Renters List
           </NavLink>
+
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] px-2 py-2 mt-4">Account</div>
+          <NavLink to="/profile" className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-[var(--text-secondary)] transition-all duration-200 relative cursor-pointer ${isActive ? 'bg-gradient-to-br from-[rgba(108,99,255,0.2)] to-[rgba(147,51,234,0.1)] text-[var(--text-accent)] border border-[rgba(108,99,255,0.3)]' : 'hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)]'}`}>
+            <UserCircle className={`w-[18px] h-[18px] shrink-0 ${isProfilePage ? 'text-[var(--accent-primary)]' : ''}`} size={18} />
+            My Profile
+          </NavLink>
+
+          {onShowImport && (
+            <button onClick={onShowImport} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-all duration-200 cursor-pointer w-full bg-transparent border-none text-left">
+              <Upload className="w-[18px] h-[18px] shrink-0" size={18} />
+              Import Data
+            </button>
+          )}
+          {onShowExport && (
+            <button onClick={onShowExport} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-card)] hover:text-[var(--text-primary)] transition-all duration-200 cursor-pointer w-full bg-transparent border-none text-left">
+              <Download className="w-[18px] h-[18px] shrink-0" size={18} />
+              Export Data
+            </button>
+          )}
         </nav>
 
         {/* Theme toggle in sidebar */}
@@ -56,9 +78,8 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
         <div className="p-4 border-t border-[var(--border-color)] flex flex-col justify-end text-[var(--text-muted)]">
           <div className="flex items-center gap-2">
             <Building2 size={14} />
-            <span>TenantPro v1.0</span>
+            <span>AkTenent v1.0</span>
           </div>
-          <div className="mt-1 text-[11px]">UI Preview Mode</div>
         </div>
       </aside>
 
@@ -68,11 +89,11 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
           <div className="w-[34px] h-[34px] rounded-lg bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] flex items-center justify-center text-base shadow-[var(--shadow-accent)]">
             <Home size={16} strokeWidth={2} className="text-white" />
           </div>
-          <span className="text-[15px] font-bold text-[var(--text-primary)]">TenantPro</span>
+          <span className="text-[15px] font-bold text-[var(--text-primary)]">AkTenent</span>
         </div>
         <div className="flex items-center gap-2.5">
           <div className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[rgba(108,99,255,0.12)] border border-[rgba(108,99,255,0.25)] rounded-full text-[11px] font-semibold text-[var(--accent-primary)]">
-            📅 March 2025
+            📅 {dateChip}
           </div>
           <button className="flex items-center justify-center w-[34px] h-[34px] rounded-lg bg-[rgba(108,99,255,0.1)] border border-[rgba(108,99,255,0.2)] text-[var(--text-accent)] cursor-pointer transition-all hover:bg-[rgba(108,99,255,0.2)] active:scale-95" onClick={onToggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
             <ThemeIcon size={16} />
@@ -85,10 +106,10 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
         <header className="hidden md:flex h-[72px] bg-[var(--bg-secondary)]/85 backdrop-blur-xl border-b border-[var(--border-color)] items-center justify-between px-8 z-50 sticky top-0" style={{ backgroundColor: 'color-mix(in srgb, var(--bg-secondary) 85%, transparent)' }}>
           <div>
             <h1 className="text-lg font-bold text-[var(--text-primary)]">{getPageTitle(location.pathname)}</h1>
-            <div className="text-xs text-[var(--text-muted)] mt-[1px]">TenantPro / {getPageTitle(location.pathname)}</div>
+            <div className="text-xs text-[var(--text-muted)] mt-[1px]">AkTenent / {getPageTitle(location.pathname)}</div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-full text-[11px] font-semibold text-[var(--text-secondary)]">📅 March 2025</div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-full text-[11px] font-semibold text-[var(--text-secondary)]">📅 {dateChip}</div>
             <button className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)] text-[var(--text-secondary)] text-xs font-semibold cursor-pointer transition-all hover:border-[var(--accent-primary)] hover:text-[var(--text-accent)] hover:bg-[rgba(108,99,255,0.08)]" onClick={onToggleTheme}>
               <ThemeIcon size={15} />
               <span>{themeLabel}</span>
@@ -129,6 +150,12 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
             {isRentersPage && <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[var(--accent-primary)] rounded-full shadow-[0_0_6px_rgba(108,99,255,0.8)]" />}
           </NavLink>
 
+          <NavLink to="/profile" className={`flex flex-col items-center justify-center gap-1 w-16 pt-1 pb-1.5 rounded-xl text-[10px] font-semibold transition-all relative no-underline ${isProfilePage ? 'text-[var(--accent-primary)] bg-[rgba(108,99,255,0.1)]' : 'text-[var(--text-muted)]'}`}>
+            <UserCircle size={22} strokeWidth={isProfilePage ? 2.2 : 1.8} className={isProfilePage ? 'text-[var(--accent-primary)] drop-shadow-[0_0_6px_rgba(108,99,255,0.5)]' : ''} />
+            <span>Profile</span>
+            {isProfilePage && <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[var(--accent-primary)] rounded-full shadow-[0_0_6px_rgba(108,99,255,0.8)]" />}
+          </NavLink>
+
           <button className="flex flex-col items-center justify-center gap-1 w-16 pt-1 pb-1.5 rounded-xl text-[10px] font-semibold text-[var(--text-muted)] transition-all bg-transparent border-none cursor-pointer active:scale-95" onClick={onToggleTheme}>
             <ThemeIcon size={22} strokeWidth={1.8} />
             <span>{themeLabel}</span>
@@ -150,5 +177,6 @@ function getPageTitle(pathname) {
   if (pathname === '/') return 'Dashboard';
   if (pathname.startsWith('/renters/')) return 'Renter Details';
   if (pathname === '/renters') return 'Renters';
-  return 'TenantPro';
+  if (pathname === '/profile') return 'My Profile';
+  return 'AkTenent';
 }

@@ -21,7 +21,7 @@ export default function AddRenterModal({ onClose, onSave, initialData }) {
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = 'Name is required';
-    if (!form.phone.trim() || !/^\d{10}$/.test(form.phone)) e.phone = 'Enter valid 10-digit phone';
+    if (!form.phone.trim() || !/^[0-9]{10}$/.test(form.phone)) e.phone = 'Enter valid 10-digit Indian mobile number';
     if (!form.flat.trim()) e.flat = 'Room/Flat is required';
     if (!form.movedInDate) e.movedInDate = 'Move-in date is required';
     if (!form.monthlyRent || isNaN(form.monthlyRent) || Number(form.monthlyRent) <= 0) e.monthlyRent = 'Enter valid rent amount';
@@ -45,7 +45,7 @@ export default function AddRenterModal({ onClose, onSave, initialData }) {
   const inputStyle = (field) => `bg-[var(--bg-input)] border rounded-[var(--radius-sm)] px-3.5 py-2.5 text-[14px] font-semibold text-[var(--text-primary)] transition-all w-full focus:outline-none placeholder-[var(--text-muted)] ${errors[field] ? 'border-[var(--accent-danger)] focus:border-[var(--accent-danger)] focus:shadow-[0_0_0_3px_rgba(239,68,68,0.15)]' : 'border-[var(--border-color)] focus:border-[var(--accent-primary)] focus:shadow-[0_0_0_3px_rgba(108,99,255,0.15)]'}`;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-center justify-center z-[200] animate-[fadeIn_0.2s_ease]" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-end md:items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] md:pl-[260px] md:pt-[72px] md:pb-4" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="w-full max-w-[680px] max-h-[92vh] md:max-h-[90vh] overflow-y-auto bg-[var(--bg-modal)] md:border border-[var(--border-color)] rounded-t-3xl md:rounded-[var(--radius-xl)] p-5 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] animate-[slideUpSheet_0.3s_ease] md:animate-[slideUp_0.25s_ease] relative mt-auto md:mt-0">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -71,7 +71,18 @@ export default function AddRenterModal({ onClose, onSave, initialData }) {
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-[12px] font-semibold text-[var(--text-secondary)] uppercase tracking-[0.05em]">Phone Number *</label>
-                <input className={inputStyle('phone')} placeholder="10-digit mobile number" value={form.phone} onChange={e => set('phone', e.target.value)} maxLength={10} inputMode="tel" />
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[13px] font-bold text-[var(--text-muted)] pointer-events-none select-none">+91</span>
+                  <input
+                    className={`${inputStyle('phone')} pl-11`}
+                    placeholder="9876543210"
+                    value={form.phone}
+                    onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    maxLength={10}
+                    inputMode="numeric"
+                    required
+                  />
+                </div>
                 {errors.phone && <span className="text-[11px] text-[var(--accent-danger)]">{errors.phone}</span>}
               </div>
             </div>

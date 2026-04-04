@@ -7,7 +7,7 @@ import DeleteConfirmModal from '../components/modals/DeleteConfirmModal';
 import ExportModal from '../components/modals/ExportModal';
 
 const PAYMENT_MODE_CLASS = { Cash: 'badge-cash', UPI: 'badge-upi', 'Bank Transfer': 'badge-bank', Cheque: 'badge-bank' };
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 // ── Rich WhatsApp message builder ──────────────────────────────────────────
 function buildWhatsAppMessage(renter, record) {
@@ -17,7 +17,7 @@ function buildWhatsAppMessage(renter, record) {
   const fullyPaid = record.rentPaid && balance <= 0;
 
   const lines = [
-    `🏠 *TenantPro — Rent ${fullyPaid ? 'Receipt' : 'Reminder'}*`,
+    `🏠 *AkTenent — Rent ${fullyPaid ? 'Receipt' : 'Reminder'}*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
     ``,
     `👤 *Renter:* ${renter.name}`,
@@ -124,58 +124,168 @@ export default function RenterDetail({ renters, rentRecords, onUpdateRenter, onD
         <ArrowLeft size={16} /> Back to Renters
       </button>
 
-      {/* Profile Header */}
-      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-5 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 md:gap-7 mb-6 relative overflow-hidden transition-shadow hover:shadow-[var(--shadow-sm)]">
-        <div className="w-[72px] h-[72px] md:w-[88px] md:h-[88px] rounded-full font-extrabold text-[24px] md:text-[28px] bg-gradient-to-br from-[var(--bg-input)] to-[var(--bg-body)] text-[var(--text-secondary)] border border-[var(--border-color)] flex items-center justify-center shrink-0 shadow-sm">{renter.avatar}</div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 flex-wrap mb-1.5">
-            <div className="text-[24px] md:text-[28px] font-extrabold text-[var(--text-primary)] tracking-tight leading-none">{renter.name}</div>
-            <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded-[4px] text-[11px] font-bold uppercase tracking-[0.05em] border ${renter.status === 'active' ? 'bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.2)]' : 'bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border-[rgba(239,68,68,0.2)]'}`}>
-              ● {renter.status === 'active' ? 'Active' : 'Inactive'}
-            </span>
+      {/* ===== Profile Header ============================================================ */}
+      {/* Mobile: stacked card  |  Desktop: horizontal banner with stats on right */}
+      <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] mb-6 overflow-hidden">
+        {/* Top banner strip */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[var(--accent-primary)] via-[#9333ea] to-[#3ecf8e]" />
+
+        <div className="p-5 md:p-7 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+          {/* Avatar */}
+          <div className="w-[72px] h-[72px] md:w-[80px] md:h-[80px] rounded-2xl font-extrabold text-[24px] bg-gradient-to-br from-[var(--accent-primary)]/20 to-[#9333ea]/20 text-[var(--accent-primary)] border border-[var(--accent-primary)]/20 flex items-center justify-center shrink-0 shadow-[var(--shadow-accent)]"
+          >{renter.avatar}</div>
+
+          {/* Name + meta */}
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2.5 mb-1">
+              <h2 className="text-[22px] md:text-[26px] font-extrabold text-[var(--text-primary)] tracking-tight leading-none">{renter.name}</h2>
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider border ${renter.status === 'active'
+                  ? 'bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.25)]'
+                  : 'bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border-[rgba(239,68,68,0.25)]'
+                }`}>
+                <span className="w-1.5 h-1.5 rounded-full inline-block bg-current" />
+                {renter.status === 'active' ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1.5 mt-2">
+              <span className="flex items-center gap-1.5 text-[13px] text-[var(--text-muted)]">
+                <Home size={13} className="shrink-0" /> {renter.flat}
+              </span>
+              <span className="flex items-center gap-1.5 text-[13px] text-[var(--text-muted)]">
+                <Phone size={13} className="shrink-0" /> +91 {renter.phone}
+              </span>
+              <span className="flex items-center gap-1.5 text-[13px] text-[var(--text-muted)]">
+                <Calendar size={13} className="shrink-0" />
+                Since {new Date(renter.movedInDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+              {renter.movedOutDate && (
+                <span className="flex items-center gap-1.5 text-[13px] text-[var(--accent-danger)]">
+                  <Calendar size={13} className="shrink-0" />
+                  Left {new Date(renter.movedOutDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="text-[14px] md:text-[15px] font-semibold text-[var(--text-secondary)] flex items-center mb-4"><Home size={12} className="mr-1.5" />{renter.flat}</div>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <div className="flex items-center text-[12px] md:text-[13px] font-medium text-[var(--text-muted)]"><Phone size={14} className="mr-1.5" />{renter.phone}</div>
-            <div className="flex items-center text-[12px] md:text-[13px] font-medium text-[var(--text-muted)]"><Calendar size={14} className="mr-1.5" />Moved in: {new Date(renter.movedInDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-            {renter.movedOutDate && <div className="flex items-center text-[12px] md:text-[13px] font-medium text-[var(--accent-danger)] opacity-80"><Calendar size={14} className="mr-1.5" />Moved out: {new Date(renter.movedOutDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>}
+
+          {/* Desktop: quick stat pills */}
+          <div className="hidden md:flex items-center gap-3 shrink-0 ml-auto">
+            <div className="flex flex-col items-center px-4 py-2.5 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] min-w-[90px]">
+              <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Monthly</span>
+              <span className="text-[15px] font-extrabold text-[var(--text-primary)]">₹{renter.monthlyRent.toLocaleString()}</span>
+            </div>
+            <div className="flex flex-col items-center px-4 py-2.5 rounded-xl bg-[rgba(34,197,94,0.08)] border border-[rgba(34,197,94,0.2)] min-w-[90px]">
+              <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Collected</span>
+              <span className="text-[15px] font-extrabold text-[#3ecf8e]">₹{totalPaid.toLocaleString()}</span>
+            </div>
+            <div className="flex flex-col items-center px-4 py-2.5 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] min-w-[70px]">
+              <span className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Months</span>
+              <span className="text-[15px] font-extrabold text-[var(--text-primary)]">{paidMonths}<span className="text-[var(--text-muted)] font-medium">/{totalMonths}</span></span>
+            </div>
+          </div>
+
+          {/* Mobile: action buttons row */}
+          <div className="flex md:hidden flex-wrap gap-2 w-full">
+            <a href={`tel:${renter.phone}`} className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-all cursor-pointer shadow-sm">
+              <Phone size={13} /> Call
+            </a>
+            <button className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-bold bg-[#25d366] hover:bg-[#20bd5a] text-white shadow-sm border-none cursor-pointer transition-all" onClick={() => window.open(`https://wa.me/91${renter.phone}`, '_blank')}>
+              <MessageCircle size={13} /> WhatsApp
+            </button>
+            <button className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-all cursor-pointer shadow-sm" onClick={() => setShowExport(true)}>
+              <Download size={13} /> Export
+            </button>
+            <button className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-all cursor-pointer shadow-sm" onClick={() => setShowEditRenter(true)}>
+              <Edit3 size={13} /> Edit
+            </button>
+            <button className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-[12px] font-bold bg-[rgba(239,68,68,0.08)] text-[var(--accent-danger)] border border-[rgba(239,68,68,0.2)] hover:bg-[rgba(239,68,68,0.15)] transition-all cursor-pointer shadow-sm" onClick={() => setShowDeleteRenter(true)}>
+              <Trash2 size={13} /> Delete
+            </button>
           </div>
         </div>
-        <div className="flex flex-wrap md:flex-col gap-2 w-full md:w-auto mt-2 md:mt-0">
-          <a href={`tel:${renter.phone}`} className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-all cursor-pointer bg-[var(--bg-body)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--text-primary)] shadow-sm"><Phone size={14} /> Call</a>
-          <button className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-all cursor-pointer bg-[#25d366] hover:bg-[#20bd5a] text-white shadow-sm border-none" onClick={() => window.open(`https://wa.me/91${renter.phone}`, '_blank')}>
-            <MessageCircle size={14} /> WhatsApp
+
+        {/* Desktop: action button strip at the bottom of the header card */}
+        <div className="hidden md:flex items-center gap-2 px-7 pb-5 pt-1">
+          <a href={`tel:${renter.phone}`} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-all cursor-pointer shadow-sm">
+            <Phone size={13} /> Call
+          </a>
+          <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold bg-[#25d366] hover:bg-[#20bd5a] text-white shadow-sm border-none cursor-pointer transition-all" onClick={() => window.open(`https://wa.me/91${renter.phone}`, '_blank')}>
+            <MessageCircle size={13} /> WhatsApp
           </button>
-          <button className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-all cursor-pointer bg-[var(--bg-body)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--text-primary)] shadow-sm" onClick={() => setShowExport(true)}>
-            <Download size={14} /> Export
+          <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-all cursor-pointer shadow-sm" onClick={() => setShowExport(true)}>
+            <Download size={13} /> Export
           </button>
-          <button className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-all cursor-pointer bg-[var(--bg-body)] text-[var(--text-primary)] border border-[var(--border-color)] hover:border-[var(--text-primary)] shadow-sm" onClick={() => setShowEditRenter(true)}><Edit3 size={14} /> Edit</button>
-          <button className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[var(--radius-sm)] text-[12px] font-bold transition-all cursor-pointer bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border border-[rgba(239,68,68,0.2)] hover:bg-[rgba(239,68,68,0.15)] shadow-sm" onClick={() => setShowDeleteRenter(true)}><Trash2 size={14} /> Delete</button>
+          <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-all cursor-pointer shadow-sm" onClick={() => setShowEditRenter(true)}>
+            <Edit3 size={13} /> Edit
+          </button>
+          <div className="ml-auto">
+            <button className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[12px] font-bold bg-[rgba(239,68,68,0.08)] text-[var(--accent-danger)] border border-[rgba(239,68,68,0.2)] hover:bg-[rgba(239,68,68,0.15)] transition-all cursor-pointer shadow-sm" onClick={() => setShowDeleteRenter(true)}>
+              <Trash2 size={13} /> Delete Renter
+            </button>
+          </div>
+        </div>
+
+        {/* Info stat row — mobile only */}
+        <div className="md:hidden grid grid-cols-3 border-t border-[var(--border-color)] divide-x divide-[var(--border-color)]">
+          <div className="flex flex-col items-center py-3 px-2">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Monthly</span>
+            <span className="text-[14px] font-extrabold text-[var(--text-primary)]">₹{renter.monthlyRent.toLocaleString()}</span>
+          </div>
+          <div className="flex flex-col items-center py-3 px-2">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Collected</span>
+            <span className="text-[14px] font-extrabold text-[#3ecf8e]">₹{totalPaid.toLocaleString()}</span>
+          </div>
+          <div className="flex flex-col items-center py-3 px-2">
+            <span className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-0.5">Months</span>
+            <span className="text-[14px] font-extrabold text-[var(--text-primary)]">{paidMonths}<span className="text-[var(--text-muted)] font-medium">/{totalMonths}</span></span>
+          </div>
         </div>
       </div>
 
-      {/* Info Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-8">
+      {/* Info Grid — desktop: show notes below stats; mobile: 2-col grid same as before */}
+      <div className="hidden md:grid grid-cols-5 gap-4 mb-8">
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
           <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Monthly Rent</div>
-          <div className="text-[18px] md:text-[20px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">₹{renter.monthlyRent.toLocaleString()}</div>
+          <div className="text-[20px] font-extrabold text-[var(--text-primary)] mt-auto">₹{renter.monthlyRent.toLocaleString()}</div>
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
           <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Advance Paid</div>
-          <div className="text-[18px] md:text-[20px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">{renter.advancePaid ? `₹${renter.advanceAmount.toLocaleString()}` : 'Not Paid'}</div>
+          <div className="text-[20px] font-extrabold text-[var(--text-primary)] mt-auto">{renter.advancePaid ? `₹${renter.advanceAmount.toLocaleString()}` : '—'}</div>
           <div className="mt-1">{renter.advancePaid ? <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-[0.05em] bg-[rgba(34,197,94,0.1)] text-[#22c55e] border border-[rgba(34,197,94,0.2)]">✓ Received</span> : <span className="inline-flex items-center justify-center px-1.5 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-[0.05em] bg-[rgba(245,158,11,0.1)] text-[#f59e0b] border border-[rgba(245,158,11,0.2)]">Pending</span>}</div>
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
-          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Initial Light Reading</div>
-          <div className="text-[18px] md:text-[20px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">{renter.initialLightReading} <span className="text-[12px] text-[var(--text-muted)] font-medium">units</span></div>
-        </div>
-        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
-          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Total Collected</div>
-          <div className="text-[18px] md:text-[20px] font-extrabold text-[#3ecf8e] mt-auto leading-tight">₹{totalPaid.toLocaleString()}</div>
+          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Initial Reading</div>
+          <div className="text-[20px] font-extrabold text-[var(--text-primary)] mt-auto">{renter.initialLightReading} <span className="text-[12px] text-[var(--text-muted)] font-medium">units</span></div>
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
           <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Months Recorded</div>
-          <div className="text-[18px] md:text-[20px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">{totalMonths}</div>
+          <div className="text-[20px] font-extrabold text-[var(--text-primary)] mt-auto">{totalMonths}</div>
+          <div className="text-[11px] text-[var(--text-muted)] mt-1">{paidMonths} paid · {totalMonths - paidMonths} pending</div>
+        </div>
+        {renter.notes ? (
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
+            <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Notes</div>
+            <div className="text-[12px] font-medium text-[var(--text-primary)] leading-relaxed mt-auto">{renter.notes}</div>
+          </div>
+        ) : (
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] border-dashed rounded-[var(--radius-md)] p-4 flex flex-col items-center justify-center text-center">
+            <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em]">No Notes</div>
+          </div>
+        )}
+      </div>
+
+      {/* Info Grid — mobile: 2-col */}
+      <div className="md:hidden grid grid-cols-2 gap-3 mb-8">
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
+          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Monthly Rent</div>
+          <div className="text-[18px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">₹{renter.monthlyRent.toLocaleString()}</div>
+        </div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
+          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Total Collected</div>
+          <div className="text-[18px] font-extrabold text-[#3ecf8e] mt-auto leading-tight">₹{totalPaid.toLocaleString()}</div>
+        </div>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-md)] p-4 flex flex-col">
+          <div className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.05em] mb-1">Months Recorded</div>
+          <div className="text-[18px] font-extrabold text-[var(--text-primary)] mt-auto leading-tight">{totalMonths}</div>
           <div className="text-[11px] font-semibold text-[var(--text-muted)] mt-1">{paidMonths} paid, {totalMonths - paidMonths} pending</div>
         </div>
         {renter.notes && (
@@ -206,9 +316,9 @@ export default function RenterDetail({ renters, rentRecords, onUpdateRenter, onD
         </div>
       ) : (
         <>
-          {/* ===== DESKTOP TABLE ===== */}
-          <div className="overflow-x-auto bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] shadow-sm hidden md:block custom-scrollbar relative">
-            <table className="w-full border-collapse text-left whitespace-nowrap text-[13px] text-[var(--text-primary)] relative">
+          {/* ===== DESKTOP TABLE — no whitespace-nowrap so cols wrap, no horizontal scroll ===== */}
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] shadow-sm hidden md:block custom-scrollbar">
+            <table className="w-full border-collapse text-left text-[13px] text-[var(--text-primary)]" style={{ tableLayout: 'fixed' }}>
               <thead>
                 <tr className="sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">
                   <th className="px-4 py-3 bg-[var(--bg-body)] text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider border-b border-[var(--border-color)] first:rounded-tl-[var(--radius-lg)]">Month / Year</th>

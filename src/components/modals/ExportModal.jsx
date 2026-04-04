@@ -8,8 +8,8 @@ import {
 
 const FORMATS = [
   { id: 'excel', label: 'Excel (.xlsx)', icon: FileSpreadsheet, color: '#22c55e', desc: '2 sheets: full data + summary' },
-  { id: 'csv',   label: 'CSV (.csv)',   icon: FileText,        color: '#38bdf8', desc: 'Universal spreadsheet format' },
-  { id: 'json',  label: 'JSON (.json)', icon: FileJson,        color: '#f59e0b', desc: 'Raw structured data' },
+  { id: 'csv', label: 'CSV (.csv)', icon: FileText, color: '#38bdf8', desc: 'Universal spreadsheet format' },
+  { id: 'json', label: 'JSON (.json)', icon: FileJson, color: '#f59e0b', desc: 'Raw structured data' },
 ];
 
 export default function ExportModal({ renters, rentRecords, defaultRenter, onClose }) {
@@ -25,13 +25,13 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
   const handleExport = () => {
     const ts = new Date().toISOString().slice(0, 10);
     if (scope === 'all') {
-      const fn = `TenantPro_AllRenters_${ts}`;
+      const fn = `AkTenent_AllRenters_${ts}`;
       if (format === 'excel') exportExcel(renters, rentRecords, fn);
       else if (format === 'csv') exportCSV(renters, rentRecords, fn);
       else exportJSON(renters, rentRecords, fn);
     } else {
       if (!selectedRenter) return;
-      const fn = `TenantPro_${selectedRenter.name.replace(/\s+/g,'_')}_${ts}`;
+      const fn = `AkTenent_${selectedRenter.name.replace(/\s+/g, '_')}_${ts}`;
       if (format === 'excel') exportExcelSingle(selectedRenter, rentRecords, fn);
       else if (format === 'csv') exportCSVSingle(selectedRenter, rentRecords, fn);
       else exportJSONSingle(selectedRenter, rentRecords, fn);
@@ -41,7 +41,7 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] px-4" onClick={e => e.target === e.currentTarget && onClose()}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-[4px] flex items-end md:items-center justify-center z-[200] animate-[fadeIn_0.2s_ease] px-4 md:pl-[260px] md:pt-[72px] md:pb-4" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="w-full max-w-[480px] bg-[var(--bg-modal)] md:border border-[var(--border-color)] rounded-b-none rounded-t-3xl md:rounded-[var(--radius-xl)] p-5 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.6)] animate-[slideUpSheet_0.3s_ease] md:animate-[slideUp_0.25s_ease] relative mt-auto md:mt-0 flex flex-col">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -66,7 +66,7 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
               <div className="text-[11px] font-bold text-[var(--text-accent)] uppercase tracking-[0.08em] mb-3">📄 File Format</div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {FORMATS.map(f => (
-                  <button key={f.id} 
+                  <button key={f.id}
                     className={`flex flex-col items-center justify-center p-3.5 rounded-xl border transition-all duration-200 cursor-pointer text-center bg-[var(--bg-card)] ${format === f.id ? 'border-[color:var(--fmt-color)] bg-[color:color-mix(in_srgb,var(--fmt-color)_8%,transparent)] shadow-[0_4px_16px_color-mix(in_srgb,var(--fmt-color)_20%,transparent)] -translate-y-[2px]' : 'border-[var(--border-color)] hover:border-[var(--text-muted)] text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)]'}`}
                     onClick={() => setFormat(f.id)} style={{ '--fmt-color': f.color }}>
                     <f.icon size={22} className={`mb-2 transition-all ${format === f.id ? '' : 'grayscale opacity-50'}`} style={{ color: format === f.id ? f.color : undefined }} />
