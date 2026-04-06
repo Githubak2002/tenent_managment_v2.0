@@ -17,7 +17,7 @@ function buildWhatsAppMessage(renter, record) {
   const fullyPaid = record.rentPaid && balance <= 0;
 
   const lines = [
-    `🏠 *AkTenent — Rent ${fullyPaid ? 'Receipt' : 'Reminder'}*`,
+    `🏠 *AkTenant — Rent ${fullyPaid ? 'Receipt' : 'Reminder'}*`,
     `━━━━━━━━━━━━━━━━━━━━━`,
     ``,
     `👤 *Renter:* ${renter.name}`,
@@ -140,8 +140,8 @@ export default function RenterDetail({ renters, rentRecords, onUpdateRenter, onD
             <div className="flex flex-wrap items-center gap-2.5 mb-1">
               <h2 className="text-[22px] md:text-[26px] font-extrabold text-[var(--text-primary)] tracking-tight leading-none">{renter.name}</h2>
               <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider border ${renter.status === 'active'
-                  ? 'bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.25)]'
-                  : 'bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border-[rgba(239,68,68,0.25)]'
+                ? 'bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.25)]'
+                : 'bg-[rgba(239,68,68,0.1)] text-[var(--accent-danger)] border-[rgba(239,68,68,0.25)]'
                 }`}>
                 <span className="w-1.5 h-1.5 rounded-full inline-block bg-current" />
                 {renter.status === 'active' ? 'Active' : 'Inactive'}

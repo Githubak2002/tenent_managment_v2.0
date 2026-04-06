@@ -57,7 +57,7 @@ export default function ResetPassword() {
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#6c63ff] to-[#9333ea] flex items-center justify-center shadow-[0_8px_24px_rgba(108,99,255,0.3)]">
             <Home size={18} className="text-white" />
           </div>
-          <div className="text-white text-[16px] font-extrabold">AkTenent</div>
+          <div className="text-white text-[16px] font-extrabold">AkTenant</div>
         </div>
 
         {success ? (
@@ -76,7 +76,7 @@ export default function ResetPassword() {
         ) : (
           <div className="animate-[slideUp_0.3s_ease]">
             <h1 className="text-white text-[26px] font-extrabold mb-1.5">Set new password</h1>
-            <p className="text-white/40 text-[13px] mb-8">Choose a strong password for your AkTenent account.</p>
+            <p className="text-white/40 text-[13px] mb-8">Choose a strong password for your AkTenant account.</p>
 
             {error && (
               <div className="flex items-start gap-2.5 p-3 mb-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-[12px] font-medium">

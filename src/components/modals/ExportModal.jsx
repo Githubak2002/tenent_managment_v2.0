@@ -25,13 +25,13 @@ export default function ExportModal({ renters, rentRecords, defaultRenter, onClo
   const handleExport = () => {
     const ts = new Date().toISOString().slice(0, 10);
     if (scope === 'all') {
-      const fn = `AkTenent_AllRenters_${ts}`;
+      const fn = `AkTenant_AllRenters_${ts}`;
       if (format === 'excel') exportExcel(renters, rentRecords, fn);
       else if (format === 'csv') exportCSV(renters, rentRecords, fn);
       else exportJSON(renters, rentRecords, fn);
     } else {
       if (!selectedRenter) return;
-      const fn = `AkTenent_${selectedRenter.name.replace(/\s+/g, '_')}_${ts}`;
+      const fn = `AkTenant_${selectedRenter.name.replace(/\s+/g, '_')}_${ts}`;
       if (format === 'excel') exportExcelSingle(selectedRenter, rentRecords, fn);
       else if (format === 'csv') exportCSVSingle(selectedRenter, rentRecords, fn);
       else exportJSONSingle(selectedRenter, rentRecords, fn);

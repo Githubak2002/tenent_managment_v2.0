@@ -148,7 +148,7 @@ export default function ImportModal({ onClose, onImport }) {
       if (ext === 'json') {
         const text = await file.text();
         const result = parseJSON(text);
-        if (!result) throw new Error('Invalid JSON format. Please use a AkTenent export file.');
+        if (!result) throw new Error('Invalid JSON format. Please use a AkTenant export file.');
         setPreview(result);
       } else if (ext === 'csv') {
         const text = await file.text();
@@ -198,7 +198,7 @@ export default function ImportModal({ onClose, onImport }) {
         <div className="flex items-center justify-between mb-6 shrink-0">
           <div>
             <div className="text-[18px] font-bold flex items-center gap-2"><Upload size={18} className="text-[var(--accent-primary)]" />Import Data</div>
-            <div className="text-[13px] text-[var(--text-muted)] mt-0.5">Upload Excel, CSV, or JSON from a AkTenent export</div>
+            <div className="text-[13px] text-[var(--text-muted)] mt-0.5">Upload Excel, CSV, or JSON from a AkTenant export</div>
           </div>
           <button className="w-8 h-8 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] flex items-center justify-center transition-all cursor-pointer hover:border-[var(--accent-danger)] hover:text-[var(--accent-danger)]" onClick={onClose}><X size={16} /></button>
         </div>
@@ -245,7 +245,7 @@ export default function ImportModal({ onClose, onImport }) {
                 <p className="text-[14px] font-semibold text-[var(--text-primary)] mb-1">
                   {parsing ? 'Parsing file…' : 'Drop file here or click to browse'}
                 </p>
-                <p className="text-[12px] text-[var(--text-muted)]">Supports Excel, CSV, or JSON exported from AkTenent</p>
+                <p className="text-[12px] text-[var(--text-muted)]">Supports Excel, CSV, or JSON exported from AkTenant</p>
               </div>
 
               {/* Error */}

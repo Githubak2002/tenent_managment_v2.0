@@ -63,7 +63,7 @@ function buildRenterRows(renter, rentRecords) {
 const monthIdx = (m) => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].indexOf(m);
 
 // ── Export to EXCEL (.xlsx) ────────────────────────────────────────────────
-export function exportExcel(renters, rentRecords, filename = 'AkTenent_Export') {
+export function exportExcel(renters, rentRecords, filename = 'AkTenant_Export') {
   const allRows = renters.flatMap(r => buildRenterRows(r, rentRecords));
   const ws = XLSX.utils.json_to_sheet(allRows);
 
@@ -107,11 +107,11 @@ export function exportExcelSingle(renter, rentRecords, filename) {
   ws['!cols'] = Array(25).fill({ wch: 14 });
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, renter.name.slice(0, 31));
-  XLSX.writeFile(wb, `${filename || `AkTenent_${renter.name.replace(/\s+/g, '_')}`}.xlsx`);
+  XLSX.writeFile(wb, `${filename || `AkTenant_${renter.name.replace(/\s+/g, '_')}`}.xlsx`);
 }
 
 // ── Export to CSV ──────────────────────────────────────────────────────────
-export function exportCSV(renters, rentRecords, filename = 'AkTenent_Export') {
+export function exportCSV(renters, rentRecords, filename = 'AkTenant_Export') {
   const allRows = renters.flatMap(r => buildRenterRows(r, rentRecords));
   if (!allRows.length) return;
   const headers = Object.keys(allRows[0]);
@@ -128,11 +128,11 @@ export function exportCSV(renters, rentRecords, filename = 'AkTenent_Export') {
 }
 
 export function exportCSVSingle(renter, rentRecords, filename) {
-  exportCSV([renter], rentRecords, filename || `AkTenent_${renter.name.replace(/\s+/g, '_')}`);
+  exportCSV([renter], rentRecords, filename || `AkTenant_${renter.name.replace(/\s+/g, '_')}`);
 }
 
 // ── Export to JSON ─────────────────────────────────────────────────────────
-export function exportJSON(renters, rentRecords, filename = 'AkTenent_Export') {
+export function exportJSON(renters, rentRecords, filename = 'AkTenant_Export') {
   const data = {
     exportedAt: new Date().toISOString(),
     totalRenters: renters.length,
@@ -156,7 +156,7 @@ export function exportJSONSingle(renter, rentRecords, filename) {
         .sort((a, b) => b.year - a.year || monthIdx(b.month) - monthIdx(a.month))
     }
   };
-  downloadText(JSON.stringify(data, null, 2), `${filename || `AkTenent_${renter.name.replace(/\s+/g, '_')}`}.json`, 'application/json');
+  downloadText(JSON.stringify(data, null, 2), `${filename || `AkTenant_${renter.name.replace(/\s+/g, '_')}`}.json`, 'application/json');
 }
 
 // ── Helper: download text file ─────────────────────────────────────────────

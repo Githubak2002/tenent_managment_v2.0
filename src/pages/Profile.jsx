@@ -168,7 +168,7 @@ export default function Profile({ user, onSignOut }) {
             <Lock size={16} className="text-[var(--accent-primary)]" />
             <h3 className="text-[15px] font-bold text-[var(--text-primary)]">Change Password</h3>
           </div>
-          <p className="text-[13px] text-[var(--text-muted)] mb-5">Set a new password for your AkTenent account.</p>
+          <p className="text-[13px] text-[var(--text-muted)] mb-5">Set a new password for your AkTenant account.</p>
 
           {passMsg && <MsgBox type={passMsg.type} text={passMsg.text} className="mb-4" />}
 
@@ -207,7 +207,7 @@ export default function Profile({ user, onSignOut }) {
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-[var(--radius-lg)] p-5 md:p-7 mb-5 flex items-center justify-between gap-4">
         <div>
           <h3 className="text-[15px] font-bold text-[var(--text-primary)] flex items-center gap-2"><LogOut size={15} className="text-[var(--text-muted)]" /> Sign Out</h3>
-          <p className="text-[13px] text-[var(--text-muted)] mt-0.5">Sign out of your AkTenent account on this device.</p>
+          <p className="text-[13px] text-[var(--text-muted)] mt-0.5">Sign out of your AkTenant account on this device.</p>
         </div>
         <button onClick={onSignOut} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-bold bg-[var(--bg-input)] border border-[var(--border-color)] text-[var(--text-primary)] hover:border-[var(--text-primary)] transition-all cursor-pointer shrink-0 shadow-sm">
           <LogOut size={14} /> Sign Out

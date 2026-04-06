@@ -25,7 +25,7 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
             <Home size={22} strokeWidth={1.8} />
           </div>
           <div>
-            <div className="text-base font-bold text-[var(--text-primary)]">AkTenent</div>
+            <div className="text-base font-bold text-[var(--text-primary)]">AkTenant</div>
             <div className="text-[11px] text-[var(--text-muted)] font-normal">Property Manager</div>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
         <div className="p-4 border-t border-[var(--border-color)] flex flex-col justify-end text-[var(--text-muted)]">
           <div className="flex items-center gap-2">
             <Building2 size={14} />
-            <span>AkTenent v1.0</span>
+            <span>AkTenant v1.0</span>
           </div>
         </div>
       </aside>
@@ -89,7 +89,7 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
           <div className="w-[34px] h-[34px] rounded-lg bg-gradient-to-br from-[var(--accent-primary)] to-[#9333ea] flex items-center justify-center text-base shadow-[var(--shadow-accent)]">
             <Home size={16} strokeWidth={2} className="text-white" />
           </div>
-          <span className="text-[15px] font-bold text-[var(--text-primary)]">AkTenent</span>
+          <span className="text-[15px] font-bold text-[var(--text-primary)]">AkTenant</span>
         </div>
         <div className="flex items-center gap-2.5">
           <div className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[rgba(108,99,255,0.12)] border border-[rgba(108,99,255,0.25)] rounded-full text-[11px] font-semibold text-[var(--accent-primary)]">
@@ -106,7 +106,7 @@ export default function Layout({ children, onAddRenter, theme, onToggleTheme, on
         <header className="hidden md:flex h-[72px] bg-[var(--bg-secondary)]/85 backdrop-blur-xl border-b border-[var(--border-color)] items-center justify-between px-8 z-50 sticky top-0" style={{ backgroundColor: 'color-mix(in srgb, var(--bg-secondary) 85%, transparent)' }}>
           <div>
             <h1 className="text-lg font-bold text-[var(--text-primary)]">{getPageTitle(location.pathname)}</h1>
-            <div className="text-xs text-[var(--text-muted)] mt-[1px]">AkTenent / {getPageTitle(location.pathname)}</div>
+            <div className="text-xs text-[var(--text-muted)] mt-[1px]">AkTenant / {getPageTitle(location.pathname)}</div>
           </div>
           <div className="flex items-center gap-3">
             <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-full text-[11px] font-semibold text-[var(--text-secondary)]">📅 {dateChip}</div>
@@ -178,5 +178,5 @@ function getPageTitle(pathname) {
   if (pathname.startsWith('/renters/')) return 'Renter Details';
   if (pathname === '/renters') return 'Renters';
   if (pathname === '/profile') return 'My Profile';
-  return 'AkTenent';
+  return 'AkTenant';
 }
